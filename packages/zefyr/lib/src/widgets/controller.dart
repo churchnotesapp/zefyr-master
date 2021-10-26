@@ -1,11 +1,5 @@
-<<<<<<< HEAD
-// Copyright (c) 2018, the Zefyr project authors.  Please see the AUTHORS file
-// for details. All rights reserved. Use of this source code is governed by a
-// BSD-style license that can be found in the LICENSE file.
 import 'dart:math' as math;
 
-import 'package:flutter/widgets.dart';
-import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:notus/notus.dart';
 import 'package:quill_delta/quill_delta.dart';
@@ -201,8 +195,6 @@ class ZefyrController extends ChangeNotifier {
     final extent = math.min(_selection.extentOffset, end);
     _selection = _selection.copyWith(baseOffset: base, extentOffset: extent);
   }
-<<<<<<< HEAD
-=======
 
   TextEditingValue get plainTextEditingValue {
     return TextEditingValue(
@@ -211,5 +203,4 @@ class ZefyrController extends ChangeNotifier {
       composing: TextRange.empty,
     );
   }
->>>>>>> upstream/1.0-dev
 }
