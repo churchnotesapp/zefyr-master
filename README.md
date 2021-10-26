@@ -4,9 +4,8 @@
 
 *Soft and gentle rich text editing for Flutter applications.*
 
-**You are viewing early dev preview version of this package which is no longer actively maintained.
-To follow latest updates see dev releases for `1.0.0-dev.x` versions. You can learn more about
-upcoming 1.0.0 release here: [https://github.com/memspace/zefyr/issues/409](https://github.com/memspace/zefyr/issues/409)**
+Zefyr is currently in **early preview**. If you have a feature
+request or found a bug, please file it at the [issue tracker][].
 
 For questions and general discussions check out our
 [Spectrum community](https://spectrum.chat/zefyr).
