@@ -340,8 +340,8 @@ class _ZefyrButtonListState extends State<ZefyrButtonList> {
 
 class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
   static const kDefaultButtonIcons = {
-    //ZefyrToolbarAction.bold: Icons.format_bold,
-    //ZefyrToolbarAction.italic: Icons.format_italic,
+    ZefyrToolbarAction.bold: Icons.format_bold,
+    ZefyrToolbarAction.italic: Icons.format_italic,
     ZefyrToolbarAction.underline: Icons.format_underlined,
     ZefyrToolbarAction.link: Icons.link,
     ZefyrToolbarAction.unlink: Icons.link_off,
