@@ -224,10 +224,12 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
     final toolbar = ZefyrToolbarScaffold(
       key: _toolbarKey,
       body: ZefyrButtonList(buttons: _buildButtons(context)),
-      trailing: Row(children: [
-        ZefyrScaffold.of(context).widget.trailingChild ?? Container(),
-        buildButton(context, ZefyrToolbarAction.hideKeyboard)
-      ],),
+      trailing: Row(
+        children: [
+          ZefyrScaffold.of(context).widget.trailingChild ?? Container(),
+          buildButton(context, ZefyrToolbarAction.hideKeyboard)
+        ],
+      ),
     );
 
     layers.add(toolbar);
@@ -338,8 +340,8 @@ class _ZefyrButtonListState extends State<ZefyrButtonList> {
 
 class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
   static const kDefaultButtonIcons = {
-    ZefyrToolbarAction.bold: Icons.format_bold,
-    ZefyrToolbarAction.italic: Icons.format_italic,
+    //ZefyrToolbarAction.bold: Icons.format_bold,
+    //ZefyrToolbarAction.italic: Icons.format_italic,
     ZefyrToolbarAction.underline: Icons.format_underlined,
     ZefyrToolbarAction.link: Icons.link,
     ZefyrToolbarAction.unlink: Icons.link_off,
