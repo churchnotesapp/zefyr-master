@@ -276,9 +276,8 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     } else if (blockStyle == NotusAttribute.block.bulletList) {
       return ZefyrList(node: block);
     } else if (blockStyle == NotusAttribute.block.numberList) {
-      //return ZefyrList(node: block);
-      return ZefyrIndent(node: block);
-      return ZefyrQuote(node: block);
+      return ZefyrList(node: block);
+      //return ZefyrIndent(node: block);
     } else if (blockStyle == NotusAttribute.block.quote) {
       return ZefyrQuote(node: block);
     } else if (blockStyle == NotusAttribute.block.indent) {

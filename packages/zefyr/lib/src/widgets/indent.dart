@@ -30,11 +30,6 @@ class ZefyrIndent extends StatelessWidget {
 
     Widget content = ZefyrParagraph(node: line, blockStyle: blockStyle);
     ;
-    /*if (line.style.contains(NotusAttribute.heading)) {
-      content = ZefyrHeading(node: line, blockStyle: blockStyle);
-    } else {
-      content = ZefyrParagraph(node: line, blockStyle: blockStyle);
-    }*/
 
     final row = Row(children: <Widget>[Expanded(child: content)]);
     return Container(
