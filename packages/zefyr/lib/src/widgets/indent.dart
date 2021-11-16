@@ -28,7 +28,11 @@ class ZefyrIndent extends StatelessWidget {
   Widget _buildLine(Node node, TextStyle blockStyle, double indentSize) {
     LineNode line = node;
 
-    Widget content = ZefyrParagraph(node: line, blockStyle: blockStyle);
+    //Widget content = ZefyrParagraph(node: line, blockStyle: blockStyle);
+    Widget content = ZefyrLine(
+      node: line,
+      style: blockStyle,
+    );
 
     final row = Row(children: <Widget>[Expanded(child: content)]);
     return Container(
