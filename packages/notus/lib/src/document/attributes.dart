@@ -396,6 +396,10 @@ class BlockAttributeBuilder extends NotusAttributeBuilder<String> {
   /// Formats a block of lines as a quote.
   NotusAttribute<String> get quote =>
       NotusAttribute<String>._(key, scope, 'quote');
+
+  /// Formats a block of lines as a quote.
+  NotusAttribute<String> get indent =>
+      NotusAttribute<String>._(key, scope, 'indent');
 }
 
 class EmbedAttributeBuilder

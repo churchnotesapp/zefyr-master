@@ -13,6 +13,7 @@ import 'controller.dart';
 import 'cursor_timer.dart';
 import 'editor.dart';
 import 'image.dart';
+import 'indent.dart';
 import 'input.dart';
 import 'list.dart';
 import 'mode.dart';
@@ -166,7 +167,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
             top: 0,
             child: ZefyrSelectionOverlay(
               controls:
-              widget.selectionControls ?? defaultSelectionControls(context),
+                  widget.selectionControls ?? defaultSelectionControls(context),
             ))
       ]);
     }
@@ -275,9 +276,13 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     } else if (blockStyle == NotusAttribute.block.bulletList) {
       return ZefyrList(node: block);
     } else if (blockStyle == NotusAttribute.block.numberList) {
-      return ZefyrList(node: block);
+      //return ZefyrList(node: block);
+      return ZefyrIndent(node: block);
+      return ZefyrQuote(node: block);
     } else if (blockStyle == NotusAttribute.block.quote) {
       return ZefyrQuote(node: block);
+    } else if (blockStyle == NotusAttribute.block.indent) {
+      return ZefyrIndent(node: block);
     }
 
     throw UnimplementedError('Block format $blockStyle.');
