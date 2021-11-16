@@ -362,7 +362,7 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
     ZefyrToolbarAction.hideKeyboard: Icons.keyboard_hide,
     ZefyrToolbarAction.close: Icons.close,
     ZefyrToolbarAction.confirm: Icons.check,
-    ZefyrToolbarAction.indent: Icons.api_sharp
+    ZefyrToolbarAction.indent: Icons.format_indent_increase
   };
 
   static const kSpecialIconSizes = {

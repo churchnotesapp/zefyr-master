@@ -29,7 +29,6 @@ class ZefyrIndent extends StatelessWidget {
     LineNode line = node;
 
     Widget content = ZefyrParagraph(node: line, blockStyle: blockStyle);
-    ;
 
     final row = Row(children: <Widget>[Expanded(child: content)]);
     return Container(
