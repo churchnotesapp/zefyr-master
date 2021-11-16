@@ -36,6 +36,7 @@ enum ZefyrToolbarAction {
   hideKeyboard,
   close,
   confirm,
+  indent
 }
 
 final kZefyrToolbarAttributeActions = <ZefyrToolbarAction, NotusAttributeKey>{
@@ -52,6 +53,7 @@ final kZefyrToolbarAttributeActions = <ZefyrToolbarAction, NotusAttributeKey>{
   ZefyrToolbarAction.code: NotusAttribute.block.code,
   ZefyrToolbarAction.quote: NotusAttribute.block.quote,
   ZefyrToolbarAction.horizontalRule: NotusAttribute.embed.horizontalRule,
+  ZefyrToolbarAction.indent: NotusAttribute.block.indent,
 };
 
 /// Allows customizing appearance of [ZefyrToolbar].
@@ -260,11 +262,11 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
     final buttons = <Widget>[
       buildButton(context, ZefyrToolbarAction.bold),
       buildButton(context, ZefyrToolbarAction.italic),
-      //buildButton(context, ZefyrToolbarAction.cameraImage),
       buildButton(context, ZefyrToolbarAction.underline),
       HeadingButton(),
       buildButton(context, ZefyrToolbarAction.bulletList),
       buildButton(context, ZefyrToolbarAction.numberList),
+      buildButton(context, ZefyrToolbarAction.indent),
       if (editor.imageDelegate != null) ImageButton(),
     ];
     return buttons;
@@ -360,6 +362,7 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
     ZefyrToolbarAction.hideKeyboard: Icons.keyboard_hide,
     ZefyrToolbarAction.close: Icons.close,
     ZefyrToolbarAction.confirm: Icons.check,
+    ZefyrToolbarAction.indent: Icons.api_sharp
   };
 
   static const kSpecialIconSizes = {
