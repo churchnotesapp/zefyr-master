@@ -10,10 +10,12 @@ class ZefyrIndent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ZefyrTheme.of(context);
-    final style = theme.attributeTheme.quote.textStyle;
+    //final style = theme.attributeTheme.quote.textStyle;
+    final textStyle = theme.defaultLineTheme.textStyle;
+    ;
     final items = <Widget>[];
     for (var line in node.children) {
-      items.add(_buildLine(line, style, theme.indentWidth));
+      items.add(_buildLine(line, textStyle, theme.indentWidth));
     }
 
     return Padding(
