@@ -14,6 +14,8 @@ export 'src/fast_diff.dart';
 
 NotusAttribute prevAttribute;
 
+enum IndentAddAttribute { none, numberList, bulletList }
+
 int getPositionDelta(Delta user, Delta actual) {
   final userIter = DeltaIterator(user);
   final actualIter = DeltaIterator(actual);

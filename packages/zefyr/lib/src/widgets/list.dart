@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 import 'package:flutter/material.dart';
 import 'package:notus/notus.dart';
+import 'package:zefyr/util.dart';
 
 import 'common.dart';
 import 'paragraph.dart';
@@ -11,11 +12,13 @@ import 'theme.dart';
 /// Represents number lists and bullet lists in a Zefyr editor.
 class ZefyrList extends StatelessWidget {
   const ZefyrList(
-      {Key key, @required this.node, this.isNumberListWithIndent = false})
+      {Key key,
+      @required this.node,
+      this.indentAddAtr = IndentAddAttribute.none})
       : super(key: key);
 
   final BlockNode node;
-  final isNumberListWithIndent;
+  final IndentAddAttribute indentAddAtr;
   @override
   Widget build(BuildContext context) {
     final theme = ZefyrTheme.of(context);
@@ -44,19 +47,19 @@ class ZefyrList extends StatelessWidget {
     return ZefyrListItem(
       index: index,
       node: line,
-      isNumberListWithIndent: isNumberListWithIndent,
+      indentAddAtr: indentAddAtr,
     );
   }
 }
 
 /// An item in a [ZefyrList].
 class ZefyrListItem extends StatelessWidget {
-  ZefyrListItem({Key key, this.index, this.node, this.isNumberListWithIndent})
+  ZefyrListItem({Key key, this.index, this.node, this.indentAddAtr})
       : super(key: key);
 
   final int index;
   final LineNode node;
-  final isNumberListWithIndent;
+  final IndentAddAttribute indentAddAtr;
   @override
   Widget build(BuildContext context) {
     final BlockNode block = node.parent;
@@ -65,8 +68,7 @@ class ZefyrListItem extends StatelessWidget {
     final blockTheme = (style == NotusAttribute.block.bulletList)
         ? theme.attributeTheme.bulletList
         : theme.attributeTheme.numberList;
-    final bulletText =
-        (style == NotusAttribute.block.bulletList) ? '•' : '$index.';
+    final bulletText = getBulletText(style);
     ;
 
     TextStyle textStyle;
@@ -91,7 +93,7 @@ class ZefyrListItem extends StatelessWidget {
     Widget bullet =
         SizedBox(width: 24.0, child: Text(bulletText, style: textStyle));
     if (padding != null) {
-      if (isNumberListWithIndent) {
+      if (indentAddAtr != IndentAddAttribute.none) {
         padding = padding.copyWith(left: 10);
       }
       bullet = Padding(padding: padding, child: bullet);
@@ -101,5 +103,13 @@ class ZefyrListItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[bullet, Expanded(child: content)],
     );
+  }
+
+  String getBulletText(NotusAttribute<String> style) {
+    if (indentAddAtr != IndentAddAttribute.none) {
+      return (indentAddAtr == IndentAddAttribute.bulletList) ? '•' : '$index.';
+    } else {
+      return (style == NotusAttribute.block.bulletList) ? '•' : '$index.';
+    }
   }
 }

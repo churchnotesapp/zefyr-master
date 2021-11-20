@@ -283,10 +283,13 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     } else if (blockStyle == NotusAttribute.block.indent) {
       if (prevAttribute == NotusAttribute.block.numberList ||
           prevAttribute == NotusAttribute.block.bulletList) {
+        var addAttribute = (prevAttribute == NotusAttribute.block.numberList)
+            ? IndentAddAttribute.numberList
+            : IndentAddAttribute.bulletList;
         prevAttribute = null;
         return ZefyrList(
           node: block,
-          isNumberListWithIndent: true,
+          indentAddAtr: addAttribute,
         );
       } else {
         return ZefyrIndent(node: block);
