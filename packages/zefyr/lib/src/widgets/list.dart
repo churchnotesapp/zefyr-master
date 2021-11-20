@@ -10,10 +10,12 @@ import 'theme.dart';
 
 /// Represents number lists and bullet lists in a Zefyr editor.
 class ZefyrList extends StatelessWidget {
-  const ZefyrList({Key key, @required this.node}) : super(key: key);
+  const ZefyrList(
+      {Key key, @required this.node, this.isNumberListWithIndent = false})
+      : super(key: key);
 
   final BlockNode node;
-
+  final isNumberListWithIndent;
   @override
   Widget build(BuildContext context) {
     final theme = ZefyrTheme.of(context);
@@ -39,17 +41,22 @@ class ZefyrList extends StatelessWidget {
 
   Widget _buildItem(Node node, int index) {
     LineNode line = node;
-    return ZefyrListItem(index: index, node: line);
+    return ZefyrListItem(
+      index: index,
+      node: line,
+      isNumberListWithIndent: isNumberListWithIndent,
+    );
   }
 }
 
 /// An item in a [ZefyrList].
 class ZefyrListItem extends StatelessWidget {
-  ZefyrListItem({Key key, this.index, this.node}) : super(key: key);
+  ZefyrListItem({Key key, this.index, this.node, this.isNumberListWithIndent})
+      : super(key: key);
 
   final int index;
   final LineNode node;
-
+  final isNumberListWithIndent;
   @override
   Widget build(BuildContext context) {
     final BlockNode block = node.parent;
@@ -60,6 +67,7 @@ class ZefyrListItem extends StatelessWidget {
         : theme.attributeTheme.numberList;
     final bulletText =
         (style == NotusAttribute.block.bulletList) ? '•' : '$index.';
+    ;
 
     TextStyle textStyle;
     Widget content;
@@ -83,6 +91,9 @@ class ZefyrListItem extends StatelessWidget {
     Widget bullet =
         SizedBox(width: 24.0, child: Text(bulletText, style: textStyle));
     if (padding != null) {
+      if (isNumberListWithIndent) {
+        padding = padding.copyWith(left: 10);
+      }
       bullet = Padding(padding: padding, child: bullet);
     }
 

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
+import 'package:zefyr/util.dart';
 
 import 'code.dart';
 import 'common.dart';
@@ -280,7 +281,16 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     } else if (blockStyle == NotusAttribute.block.quote) {
       return ZefyrQuote(node: block);
     } else if (blockStyle == NotusAttribute.block.indent) {
-      return ZefyrIndent(node: block);
+      if (prevAttribute == NotusAttribute.block.numberList ||
+          prevAttribute == NotusAttribute.block.bulletList) {
+        prevAttribute = null;
+        return ZefyrList(
+          node: block,
+          isNumberListWithIndent: true,
+        );
+      } else {
+        return ZefyrIndent(node: block);
+      }
     }
 
     throw UnimplementedError('Block format $blockStyle.');

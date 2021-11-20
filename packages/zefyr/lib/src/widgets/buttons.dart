@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:notus/notus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:zefyr/util.dart';
 
 import 'scope.dart';
 import 'theme.dart';
@@ -126,7 +127,14 @@ class ZefyrButton extends StatelessWidget {
     final isToggled = editor.selectionStyle.containsSame(attribute);
     if (isToggled) {
       editor.formatSelection(attribute.unset);
+      prevAttribute = null;
     } else {
+      if (attribute != NotusAttribute.block.indent) {
+        prevAttribute = attribute;
+      }
+      /* else {
+        prevAttribute = null;
+      }*/
       editor.formatSelection(attribute);
     }
   }

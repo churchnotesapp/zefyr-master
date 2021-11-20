@@ -10,7 +10,6 @@ class ZefyrIndent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ZefyrTheme.of(context);
-    //final style = theme.attributeTheme.quote.textStyle;
     final textStyle = theme.defaultLineTheme.textStyle;
     final items = <Widget>[];
     for (var line in node.children) {

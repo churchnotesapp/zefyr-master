@@ -7,9 +7,12 @@ library zefyr.util;
 
 import 'dart:math' as math;
 
+import 'package:notus/notus.dart';
 import 'package:quill_delta/quill_delta.dart';
 
 export 'src/fast_diff.dart';
+
+NotusAttribute prevAttribute;
 
 int getPositionDelta(Delta user, Delta actual) {
   final userIter = DeltaIterator(user);

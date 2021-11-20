@@ -14,11 +14,11 @@ dependencies:
   url_launcher: ^5.0.0
   quill_delta: ^1.0.0
   notus:
-    #path: ../notus
-    git:
-      url: git://github.com/churchnotesapp/zefyr-master.git
-      path: packages/notus/
-      ref: 2071d5c4ba5a8c9601330ac4365323ca290d6ef7
+    path: ../notus
+    #git:
+      #url: git://github.com/churchnotesapp/zefyr-master.git
+      #path: packages/notus/
+      #ref: 2071d5c4ba5a8c9601330ac4365323ca290d6ef7
   meta: ^1.1.0
   quiver_hashcode: ^2.0.0
 
