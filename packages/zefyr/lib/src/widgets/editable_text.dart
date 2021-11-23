@@ -286,7 +286,7 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
         var addAttribute = (prevAttribute == NotusAttribute.block.numberList)
             ? IndentAddAttribute.numberList
             : IndentAddAttribute.bulletList;
-        prevAttribute = null;
+        //prevAttribute = null;
         return ZefyrList(
           node: block,
           indentAddAtr: addAttribute,
