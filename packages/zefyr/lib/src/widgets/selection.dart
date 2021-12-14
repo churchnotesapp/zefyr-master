@@ -330,10 +330,8 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
   }
 
   @override
-  Future<void> pasteText(SelectionChangedCause cause) {
-    // TODO: implement pasteText
-    //throw UnimplementedError();
-    return null;
+  Future<void> pasteText(SelectionChangedCause cause) async {
+
   }
 
   @override
@@ -593,7 +591,9 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
 
   Offset _getLocalPointFromDragDetails(DragUpdateDetails details) {
     // Keep track of the handle size adjusted position (Android only)
-    _dragPosition += details.delta;
+    if (_dragPosition != null) {
+      _dragPosition = _dragPosition! + details.delta;
+    }
     RenderEditableBox? paragraph =
         _scope!.renderContext!.boxForGlobalPoint(_dragPosition);
     // When dragging outside a paragraph, user expects dragging to

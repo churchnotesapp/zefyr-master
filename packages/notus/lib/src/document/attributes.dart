@@ -437,8 +437,8 @@ class EmbedAttribute extends NotusAttribute<Map<String, dynamic>?> {
 
   /// Type of this embed.
   EmbedType? get type {
-    if (value['type'] == _kHorizontalRuleEmbed) return EmbedType.horizontalRule;
-    if (value['type'] == _kImageEmbed) return EmbedType.image;
+    if (value!['type'] == _kHorizontalRuleEmbed) return EmbedType.horizontalRule;
+    if (value!['type'] == _kImageEmbed) return EmbedType.image;
     assert(false, 'Unknown embed attribute value $value.');
     return null;
   }
@@ -461,10 +461,10 @@ class EmbedAttribute extends NotusAttribute<Map<String, dynamic>?> {
     final objects = [key, scope];
     if (value != null) {
       final valueHashes =
-          value.entries.map((entry) => hash2(entry.key, entry.value));
+          value!.entries.map((entry) => hash2(entry.key, entry.value));
       objects.addAll(valueHashes);
     } else {
-      objects.add(value);
+      objects.add(value!);
     }
     return hashObjects(objects);
   }

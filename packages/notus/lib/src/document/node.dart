@@ -165,32 +165,32 @@ abstract class ContainerNode<T extends Node?> extends Node {
 
   /// Adds [node] to the end of this container children list.
   void add(T node) {
-    assert(node._parent == null);
-    node._parent = this;
+    assert(node?._parent == null);
+    node?._parent = this;
     _children.add(node!);
   }
 
   /// Adds [node] to the beginning of this container children list.
   void addFirst(T node) {
-    assert(node._parent == null);
-    node._parent = this;
+    assert(node?._parent == null);
+    node?._parent = this;
     _children.addFirst(node!);
   }
 
   /// Removes [node] from this container.
   void remove(T node) {
-    assert(node._parent == this);
-    node._parent = null;
+    assert(node?._parent == this);
+    node?._parent = null;
     _children.remove(node!);
   }
 
   /// Moves children of this node to [newParent].
   void moveChildren(ContainerNode? newParent) {
     if (isEmpty) return;
-    T? toBeOptimized = newParent!.isEmpty ? null : newParent.last as T?;
+    var toBeOptimized = newParent!.isEmpty ? null : newParent.last as T?;
     while (isNotEmpty) {
-      T child = first as T;
-      child.unlink();
+      var child = first as T;
+      child?.unlink();
       newParent.add(child);
     }
 
@@ -240,7 +240,7 @@ abstract class ContainerNode<T extends Node?> extends Node {
       assert(index == 0);
       final node = defaultChild;
       add(node);
-      node.insert(index, value, style);
+      node?.insert(index, value, style);
     } else {
       final result = lookup(index);
       result.node!.insert(result.offset, value, style);

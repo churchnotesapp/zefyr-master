@@ -121,7 +121,7 @@ class ZefyrThemeData {
   @override
   bool operator ==(other) {
     if (other.runtimeType != runtimeType) return false;
-    final ZefyrThemeData otherData = other;
+    final otherData = other as ZefyrThemeData;
     return (otherData.defaultLineTheme == defaultLineTheme) &&
         (otherData.attributeTheme == attributeTheme) &&
         (otherData.indentWidth == indentWidth) &&
@@ -184,7 +184,7 @@ class LineTheme {
   @override
   bool operator ==(other) {
     if (other.runtimeType != runtimeType) return false;
-    final LineTheme otherTheme = other;
+    final otherTheme = other as LineTheme;
     return (otherTheme.textStyle == textStyle) &&
         (otherTheme.padding == padding);
   }
@@ -266,7 +266,7 @@ class BlockTheme {
   @override
   bool operator ==(other) {
     if (other.runtimeType != runtimeType) return false;
-    final BlockTheme otherTheme = other;
+    final otherTheme = other as BlockTheme;
     return (otherTheme.textStyle == textStyle) &&
         (otherTheme.inheritLineTextStyle == inheritLineTextStyle) &&
         (otherTheme.padding == padding) &&
@@ -464,7 +464,7 @@ class AttributeTheme {
   @override
   bool operator ==(other) {
     if (other.runtimeType != runtimeType) return false;
-    final AttributeTheme otherTheme = other;
+    final otherTheme = other as AttributeTheme;
     return (otherTheme.bold == bold) &&
         (otherTheme.italic == italic) &&
         (otherTheme.underline == underline) &&
@@ -562,7 +562,7 @@ class ToolbarTheme {
   @override
   bool operator ==(other) {
     if (other.runtimeType != runtimeType) return false;
-    final ToolbarTheme otherTheme = other;
+    final otherTheme = other as ToolbarTheme;
     return (otherTheme.color == color) &&
         (otherTheme.toggleColor == toggleColor) &&
         (otherTheme.iconColor == iconColor) &&
