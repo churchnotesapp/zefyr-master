@@ -10,18 +10,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  collection: ^1.14.6
-  url_launcher: ^6.0.12
-  quill_delta: ^1.0.0
+  collection: ^1.15.0
+  url_launcher: ^6.0.17
+  quill_delta: ^3.0.0-nullsafety.2
   notus:
     git:
       url: git://github.com/churchnotesapp/zefyr-master.git
       path: packages/notus/
-      ref: bdcf3b824d7205aa3f6dce5c6d00a55a8495201c
-  meta: ^1.1.0
-  quiver_hashcode: ^2.0.0
+      ref: 7e0f8db6ebb4bcfc39553e22997329fc2f0a030f
+  meta: ^1.7.0
+  quiver_hashcode: ^3.0.0+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic: ^1.0.0
+  pedantic: ^1.11.1
