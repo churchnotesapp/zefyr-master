@@ -13,7 +13,7 @@ void main() {
       final editor = EditorSandBox(tester: tester);
       await editor.pumpAndTap();
       await editor.tapButtonWithIcon(Icons.format_list_bulleted);
-      BlockNode block = editor.document.root.children.first;
+      BlockNode block = editor.document.root.children.first as BlockNode;
       expect(block.style.get(NotusAttribute.block),
           NotusAttribute.block.bulletList);
     });

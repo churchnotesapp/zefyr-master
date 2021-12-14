@@ -9,7 +9,7 @@ import 'theme.dart';
 
 /// Represents a code snippet in Zefyr editor.
 class ZefyrCode extends StatelessWidget {
-  const ZefyrCode({Key key, @required this.node}) : super(key: key);
+  const ZefyrCode({Key? key, required this.node}) : super(key: key);
 
   /// Document node represented by this widget.
   final BlockNode node;
@@ -17,11 +17,11 @@ class ZefyrCode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final zefyrTheme = ZefyrTheme.of(context);
+    final zefyrTheme = ZefyrTheme.of(context)!;
 
     final items = <Widget>[];
     for (var line in node.children) {
-      items.add(_buildLine(line, zefyrTheme.attributeTheme.code.textStyle));
+      items.add(_buildLine(line, zefyrTheme.attributeTheme!.code!.textStyle));
     }
 
     // TODO: move background color and decoration to BlockTheme
@@ -29,7 +29,7 @@ class ZefyrCode extends StatelessWidget {
         ? Colors.grey.shade200
         : Colors.grey.shade800;
     return Padding(
-      padding: zefyrTheme.attributeTheme.code.padding,
+      padding: zefyrTheme.attributeTheme!.code!.padding!,
       child: Container(
         decoration: BoxDecoration(
           color: color,
@@ -44,8 +44,8 @@ class ZefyrCode extends StatelessWidget {
     );
   }
 
-  Widget _buildLine(Node node, TextStyle style) {
-    LineNode line = node;
+  Widget _buildLine(Node node, TextStyle? style) {
+    LineNode line = node as LineNode;
     return ZefyrLine(node: line, style: style);
   }
 }

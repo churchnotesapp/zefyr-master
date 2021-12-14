@@ -9,27 +9,27 @@ import 'toolbar.dart';
 /// Zefyr editor with material design decorations.
 class ZefyrField extends StatefulWidget {
   /// Decoration to paint around this editor.
-  final InputDecoration decoration;
+  final InputDecoration? decoration;
 
   /// Height of this editor field.
-  final double height;
-  final ZefyrController controller;
-  final FocusNode focusNode;
+  final double? height;
+  final ZefyrController? controller;
+  final FocusNode? focusNode;
   final bool autofocus;
-  final ZefyrMode mode;
-  final ZefyrToolbarDelegate toolbarDelegate;
-  final ZefyrImageDelegate imageDelegate;
-  final ScrollPhysics physics;
+  final ZefyrMode? mode;
+  final ZefyrToolbarDelegate? toolbarDelegate;
+  final ZefyrImageDelegate? imageDelegate;
+  final ScrollPhysics? physics;
 
   /// The appearance of the keyboard.
   ///
   /// This setting is only honored on iOS devices.
   ///
   /// If unset, defaults to the brightness of [ThemeData.primaryColorBrightness].
-  final Brightness keyboardAppearance;
+  final Brightness? keyboardAppearance;
 
   const ZefyrField({
-    Key key,
+    Key? key,
     this.decoration,
     this.height,
     this.controller,
@@ -52,8 +52,8 @@ class _ZefyrFieldState extends State<ZefyrField> {
   Widget build(BuildContext context) {
     Widget child = ZefyrEditor(
       padding: EdgeInsets.symmetric(vertical: 6.0),
-      controller: widget.controller,
-      focusNode: widget.focusNode,
+      controller: widget.controller!,
+      focusNode: widget.focusNode!,
       autofocus: widget.autofocus,
       mode: _effectiveMode,
       toolbarDelegate: widget.toolbarDelegate,
@@ -71,12 +71,12 @@ class _ZefyrFieldState extends State<ZefyrField> {
 
     return AnimatedBuilder(
       animation:
-          Listenable.merge(<Listenable>[widget.focusNode, widget.controller]),
-      builder: (BuildContext context, Widget child) {
+          Listenable.merge(<Listenable?>[widget.focusNode, widget.controller]),
+      builder: (BuildContext context, Widget? child) {
         return InputDecorator(
           decoration: _getEffectiveDecoration(),
-          isFocused: widget.focusNode.hasFocus,
-          isEmpty: widget.controller.document.length == 1,
+          isFocused: widget.focusNode!.hasFocus,
+          isEmpty: widget.controller!.document.length == 1,
           child: child,
         );
       },

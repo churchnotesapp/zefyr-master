@@ -14,8 +14,8 @@ import 'selection_utils.dart';
 /// Represents single paragraph of Zefyr rich-text.
 class ZefyrRichText extends LeafRenderObjectWidget {
   ZefyrRichText({
-    @required this.node,
-    @required this.text,
+    required this.node,
+    required this.text,
   }) : assert(node != null && text != null);
 
   final LineNode node;
@@ -43,13 +43,13 @@ class RenderZefyrParagraph extends RenderParagraph
     implements RenderEditableBox {
   RenderZefyrParagraph(
     TextSpan text, {
-    @required LineNode node,
+    required LineNode node,
     TextAlign textAlign = TextAlign.start,
-    @required TextDirection textDirection,
+    required TextDirection textDirection,
     bool softWrap = true,
     TextOverflow overflow = TextOverflow.clip,
     double textScaleFactor = 1.0,
-    int maxLines,
+    int? maxLines,
   })  : node = node,
         _prototypePainter = TextPainter(
           text: TextSpan(text: '.', style: text.style),
@@ -77,7 +77,7 @@ class RenderZefyrParagraph extends RenderParagraph
   SelectionOrder get selectionOrder => SelectionOrder.background;
 
   @override
-  TextSelection getLocalSelection(TextSelection documentSelection) {
+  TextSelection? getLocalSelection(TextSelection documentSelection) {
     if (!intersectsWithSelection(documentSelection)) {
       return null;
     }
@@ -109,12 +109,12 @@ class RenderZefyrParagraph extends RenderParagraph
   }
 
   @override
-  Offset getOffsetForCaret(TextPosition position, Rect caretPrototype) {
+  Offset getOffsetForCaret(TextPosition position, Rect? caretPrototype) {
     final localPosition = TextPosition(
       offset: position.offset - node.documentOffset,
       affinity: position.affinity,
     );
-    return super.getOffsetForCaret(localPosition, caretPrototype);
+    return super.getOffsetForCaret(localPosition, caretPrototype!);
   }
 
   // the trailing \n is not handled by the span, drop it from the sel.
@@ -132,8 +132,8 @@ class RenderZefyrParagraph extends RenderParagraph
   // This method works around some issues in getBoxesForSelection and handles
   // edge-case with our TextSpan objects not having last line-break character.
   @override
-  List<ui.TextBox> getEndpointsForSelection(TextSelection selection) {
-    final local = getLocalSelection(selection);
+  List<ui.TextBox> getEndpointsForSelection(TextSelection? selection) {
+    final local = getLocalSelection(selection!)!;
     if (local.isCollapsed) {
       final caret = CursorPainter.buildPrototype(preferredLineHeight);
       final offset = getOffsetForCaret(local.extent, caret);
@@ -177,7 +177,7 @@ class RenderZefyrParagraph extends RenderParagraph
   }
 
   final TextPainter _prototypePainter;
-  List<ui.TextBox> _selectionRects;
+  List<ui.TextBox>? _selectionRects;
 
   /// Returns `true` if this paragraph intersects with document [selection].
   @override
@@ -187,18 +187,18 @@ class RenderZefyrParagraph extends RenderParagraph
     return selectionIntersectsWith(base, extent, selection);
   }
 
-  TextSelection _lastPaintedSelection;
+  TextSelection? _lastPaintedSelection;
   @override
   void paintSelection(PaintingContext context, Offset offset,
-      TextSelection selection, Color selectionColor) {
+      TextSelection? selection, Color selectionColor) {
     if (_lastPaintedSelection != selection) {
       _selectionRects = null;
     }
-    var localSel = getLocalSelection(selection);
+    var localSel = getLocalSelection(selection!)!;
 
     _selectionRects ??= getBoxesForSelection(_trimSelection(localSel));
     final paint = Paint()..color = selectionColor;
-    for (var box in _selectionRects) {
+    for (var box in _selectionRects!) {
       context.canvas.drawRect(box.toRect().shift(offset), paint);
     }
     _lastPaintedSelection = selection;

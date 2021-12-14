@@ -20,7 +20,7 @@ class InputConnectionController implements TextInputClient {
 
   /// Returns `true` if there is open input connection.
   bool get hasConnection =>
-      _textInputConnection != null && _textInputConnection.attached;
+      _textInputConnection != null && _textInputConnection!.attached;
 
   /// Opens or closes input connection based on the current state of
   /// [focusNode] and [value].
@@ -51,14 +51,14 @@ class InputConnectionController implements TextInputClient {
         ..setEditingState(value);
       _sentRemoteValues.add(value);
     } else {
-      _textInputConnection.show();
+      _textInputConnection!.show();
     }
   }
 
   /// Closes input connection if it's currently open. Otherwise does nothing.
   void closeConnection() {
     if (hasConnection) {
-      _textInputConnection.close();
+      _textInputConnection!.close();
       _textInputConnection = null;
       _lastKnownRemoteTextEditingValue = null;
       _sentRemoteValues.clear();
@@ -79,14 +79,14 @@ class InputConnectionController implements TextInputClient {
     // It is important to prevent excessive remote updates as it can cause
     // race conditions.
     final actualValue = value.copyWith(
-      composing: _lastKnownRemoteTextEditingValue.composing,
+      composing: _lastKnownRemoteTextEditingValue!.composing,
     );
 
     if (actualValue == _lastKnownRemoteTextEditingValue) return;
 
-    final shouldRemember = value.text != _lastKnownRemoteTextEditingValue.text;
+    final shouldRemember = value.text != _lastKnownRemoteTextEditingValue!.text;
     _lastKnownRemoteTextEditingValue = actualValue;
-    _textInputConnection.setEditingState(actualValue);
+    _textInputConnection!.setEditingState(actualValue);
     if (shouldRemember) {
       // Only keep track if text changed (selection changes are not relevant)
       _sentRemoteValues.add(actualValue);
@@ -126,8 +126,8 @@ class InputConnectionController implements TextInputClient {
     }
 
     // Check if only composing range changed.
-    if (_lastKnownRemoteTextEditingValue.text == value.text &&
-        _lastKnownRemoteTextEditingValue.selection == value.selection) {
+    if (_lastKnownRemoteTextEditingValue!.text == value.text &&
+        _lastKnownRemoteTextEditingValue!.selection == value.selection) {
       // This update only modifies composing range. Since we don't keep track
       // of composing range in Zefyr we just need to update last known value
       // here.
@@ -143,7 +143,7 @@ class InputConnectionController implements TextInputClient {
     // For more details see https://github.com/flutter/flutter/issues/19191
     // TODO: remove try-catch when/if Flutter stops silencing these errors.
     try {
-      final effectiveLastKnownValue = _lastKnownRemoteTextEditingValue;
+      final effectiveLastKnownValue = _lastKnownRemoteTextEditingValue!;
       _lastKnownRemoteTextEditingValue = value;
       final oldText = effectiveLastKnownValue.text;
       final text = value.text;
@@ -162,7 +162,7 @@ class InputConnectionController implements TextInputClient {
   }
 
   @override
-  TextEditingValue get currentTextEditingValue =>
+  TextEditingValue? get currentTextEditingValue =>
       _lastKnownRemoteTextEditingValue;
 
   @override
@@ -173,7 +173,7 @@ class InputConnectionController implements TextInputClient {
   @override
   void connectionClosed() {
     if (hasConnection) {
-      _textInputConnection.connectionClosedReceived();
+      _textInputConnection!.connectionClosedReceived();
       _textInputConnection = null;
       _lastKnownRemoteTextEditingValue = null;
       _sentRemoteValues.clear();
@@ -185,12 +185,12 @@ class InputConnectionController implements TextInputClient {
   //
 
   final List<TextEditingValue> _sentRemoteValues = [];
-  TextInputConnection _textInputConnection;
-  TextEditingValue _lastKnownRemoteTextEditingValue;
+  TextInputConnection? _textInputConnection;
+  TextEditingValue? _lastKnownRemoteTextEditingValue;
 
   // TODO: figure out if we need to support autofill
   @override
-  AutofillScope get currentAutofillScope => null;
+  AutofillScope? get currentAutofillScope => null;
 
   @override
   void showAutocorrectionPromptRect(int start, int end) {

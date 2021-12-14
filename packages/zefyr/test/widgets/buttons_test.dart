@@ -18,9 +18,9 @@ void main() {
       await editor.updateSelection(base: 5, extent: 10);
       await editor.tapButtonWithIcon(Icons.format_bold);
 
-      LineNode line = editor.document.root.children.first;
+      LineNode line = editor.document.root.children.first as LineNode;
       expect(line.childCount, 3);
-      TextNode bold = line.children.elementAt(1);
+      TextNode bold = line.children.elementAt(1) as TextNode;
       expect(bold.style.toJson(), NotusAttribute.bold.toJson());
       expect(bold.value, 'House');
 
@@ -64,7 +64,7 @@ void main() {
       await editor.pumpAndTap();
       await editor.tapButtonWithIcon(Icons.format_size);
       await editor.tapButtonWithText('H3');
-      LineNode line = editor.document.root.children.first;
+      LineNode line = editor.document.root.children.first as LineNode;
       expect(line.style.containsSame(NotusAttribute.heading.level3), isTrue);
       await editor.tapButtonWithText('H2');
       expect(line.style.containsSame(NotusAttribute.heading.level2), isTrue);
@@ -129,9 +129,9 @@ void main() {
       await editor.tapButtonWithIcon(Icons.check);
       expect(find.widgetWithText(ZefyrToolbarScaffold, 'https://github.com'),
           findsOneWidget);
-      LineNode line = editor.document.root.children.first;
+      LineNode line = editor.document.root.children.first as LineNode;
       expect(line.childCount, 3);
-      TextNode link = line.children.elementAt(1);
+      TextNode link = line.children.elementAt(1) as TextNode;
       expect(link.value, 'House');
       expect(link.style.toJson(),
           NotusAttribute.link.fromString('https://github.com').toJson());
@@ -185,8 +185,8 @@ void main() {
 
 class _TestImageDelegate implements ZefyrImageDelegate<String> {
   @override
-  Widget buildImage(BuildContext context, String key) {
-    return Image.file(File(key));
+  Widget buildImage(BuildContext context, String? key) {
+    return Image.file(File(key!));
   }
 
   @override

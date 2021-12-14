@@ -9,39 +9,39 @@ import 'theme.dart';
 
 /// Represents regular paragraph line in a Zefyr editor.
 class ZefyrParagraph extends StatelessWidget {
-  ZefyrParagraph({Key key, @required this.node, this.blockStyle})
+  ZefyrParagraph({Key? key, required this.node, this.blockStyle})
       : super(key: key);
 
   final LineNode node;
-  final TextStyle blockStyle;
+  final TextStyle? blockStyle;
 
   @override
   Widget build(BuildContext context) {
-    final theme = ZefyrTheme.of(context);
-    var style = theme.defaultLineTheme.textStyle;
+    final theme = ZefyrTheme.of(context)!;
+    var style = theme.defaultLineTheme!.textStyle;
     if (blockStyle != null) {
       style = style.merge(blockStyle);
     }
     return ZefyrLine(
       node: node,
       style: style,
-      padding: theme.defaultLineTheme.padding,
+      padding: theme.defaultLineTheme!.padding,
     );
   }
 }
 
 /// Represents heading-styled line in [ZefyrEditor].
 class ZefyrHeading extends StatelessWidget {
-  ZefyrHeading({Key key, @required this.node, this.blockStyle})
+  ZefyrHeading({Key? key, required this.node, this.blockStyle})
       : assert(node.style.contains(NotusAttribute.heading)),
         super(key: key);
 
   final LineNode node;
-  final TextStyle blockStyle;
+  final TextStyle? blockStyle;
 
   @override
   Widget build(BuildContext context) {
-    final theme = themeOf(node, context);
+    final theme = themeOf(node, context)!;
     var style = theme.textStyle;
     if (blockStyle != null) {
       style = style.merge(blockStyle);
@@ -53,15 +53,15 @@ class ZefyrHeading extends StatelessWidget {
     );
   }
 
-  static LineTheme themeOf(LineNode node, BuildContext context) {
+  static LineTheme? themeOf(LineNode node, BuildContext context) {
     final theme = ZefyrTheme.of(context);
-    final style = node.style.get(NotusAttribute.heading);
+    final style = node.style.get(NotusAttribute.heading as NotusAttributeKey<int>);
     if (style == NotusAttribute.heading.level1) {
-      return theme.attributeTheme.heading1;
+      return theme!.attributeTheme!.heading1;
     } else if (style == NotusAttribute.heading.level2) {
-      return theme.attributeTheme.heading2;
+      return theme!.attributeTheme!.heading2;
     } else if (style == NotusAttribute.heading.level3) {
-      return theme.attributeTheme.heading3;
+      return theme!.attributeTheme!.heading3;
     }
     throw UnimplementedError('Unsupported heading style $style');
   }

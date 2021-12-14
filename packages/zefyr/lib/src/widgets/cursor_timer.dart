@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class CursorTimer {
   static const _kCursorBlinkHalfPeriod = Duration(milliseconds: 500);
 
-  Timer _timer;
+  Timer? _timer;
   final ValueNotifier<bool> _showCursor = ValueNotifier<bool>(false);
 
   ValueNotifier<bool> get value => _showCursor;

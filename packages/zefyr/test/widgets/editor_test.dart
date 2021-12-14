@@ -27,7 +27,7 @@ void main() {
       await tester.pumpAndSettle();
       final p =
           tester.widget(find.byType(ZefyrRichText).first) as ZefyrRichText;
-      expect(p.text.children.first.style.color, Colors.red);
+      expect(p.text.children!.first.style!.color, Colors.red);
     });
 
     testWidgets('collapses selection when unfocused', (tester) async {
@@ -61,7 +61,7 @@ void main() {
       var widget = sandbox.findFirstEditor();
       var line = widget.controller.document.root.children.first;
       expect(line, isInstanceOf<BlockNode>());
-      BlockNode block = line;
+      BlockNode block = line as BlockNode;
       expect(block.style.contains(NotusAttribute.block.bulletList), isTrue);
 
       await sandbox.tapSecondEditor();
@@ -73,7 +73,7 @@ void main() {
       widget = sandbox.findSecondEditor();
       line = widget.controller.document.root.children.first;
       expect(line, isInstanceOf<BlockNode>());
-      block = line;
+      block = line as BlockNode;
       expect(block.style.contains(NotusAttribute.block.bulletList), isTrue);
     });
   });

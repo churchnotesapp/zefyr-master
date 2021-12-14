@@ -13,23 +13,23 @@ import 'selection_utils.dart';
 
 class EditableBox extends SingleChildRenderObjectWidget {
   EditableBox({
-    @required Widget child,
-    @required this.node,
-    @required this.layerLink,
-    @required this.renderContext,
-    @required this.showCursor,
-    @required this.selection,
-    @required this.selectionColor,
-    @required this.cursorColor,
+    required Widget child,
+    required this.node,
+    required this.layerLink,
+    required this.renderContext,
+    required this.showCursor,
+    required this.selection,
+    required this.selectionColor,
+    required this.cursorColor,
   }) : super(child: child);
 
   final ContainerNode node;
   final LayerLink layerLink;
-  final ZefyrRenderContext renderContext;
+  final ZefyrRenderContext? renderContext;
   final ValueNotifier<bool> showCursor;
-  final TextSelection selection;
+  final TextSelection? selection;
   final Color selectionColor;
-  final Color cursorColor;
+  final Color? cursorColor;
 
   @override
   RenderEditableProxyBox createRenderObject(BuildContext context) {
@@ -40,7 +40,7 @@ class EditableBox extends SingleChildRenderObjectWidget {
       showCursor: showCursor,
       selection: selection,
       selectionColor: selectionColor,
-      cursorColor: cursorColor,
+      cursorColor: cursorColor!,
     );
   }
 
@@ -64,14 +64,14 @@ class RenderEditableProxyBox extends RenderBox
         RenderProxyBoxMixin<RenderEditableBox>
     implements RenderEditableBox {
   RenderEditableProxyBox({
-    RenderEditableBox child,
-    @required ContainerNode node,
-    @required LayerLink layerLink,
-    @required ZefyrRenderContext renderContext,
-    @required ValueNotifier<bool> showCursor,
-    @required TextSelection selection,
-    @required Color selectionColor,
-    @required Color cursorColor,
+    RenderEditableBox? child,
+    required ContainerNode node,
+    required LayerLink layerLink,
+    required ZefyrRenderContext? renderContext,
+    required ValueNotifier<bool> showCursor,
+    required TextSelection? selection,
+    required Color selectionColor,
+    required Color cursorColor,
   })  : node = node,
         _layerLink = layerLink,
         _renderContext = renderContext,
@@ -83,11 +83,11 @@ class RenderEditableProxyBox extends RenderBox
     _cursorPainter = CursorPainter(cursorColor);
   }
 
-  CursorPainter _cursorPainter;
+  late CursorPainter _cursorPainter;
 
-  set cursorColor(Color value) {
+  set cursorColor(Color? value) {
     if (_cursorPainter.color != value) {
-      _cursorPainter.color = value;
+      _cursorPainter.color = value!;
       markNeedsPaint();
     }
   }
@@ -104,12 +104,12 @@ class RenderEditableProxyBox extends RenderBox
     _layerLink = value;
   }
 
-  ZefyrRenderContext _renderContext;
-  set renderContext(ZefyrRenderContext value) {
+  ZefyrRenderContext? _renderContext;
+  set renderContext(ZefyrRenderContext? value) {
     if (_renderContext == value) return;
-    if (attached) _renderContext.removeBox(this);
+    if (attached) _renderContext!.removeBox(this);
     _renderContext = value;
-    if (attached) _renderContext.addBox(this);
+    if (attached) _renderContext!.addBox(this);
   }
 
   ValueNotifier<bool> _showCursor;
@@ -123,9 +123,9 @@ class RenderEditableProxyBox extends RenderBox
   }
 
   /// Current document selection.
-  TextSelection get selection => _selection;
-  TextSelection _selection;
-  set selection(TextSelection value) {
+  TextSelection? get selection => _selection;
+  TextSelection? _selection;
+  set selection(TextSelection? value) {
     if (_selection == value) return;
     // TODO: check if selection affects this block (also check previous value)
     _selection = value;
@@ -157,19 +157,19 @@ class RenderEditableProxyBox extends RenderBox
       // TODO: react to document node's mounted state.
       return false;
     }
-    if (!_selection.isCollapsed) return false;
+    if (!_selection!.isCollapsed) return false;
 
     final start = node.documentOffset;
     final end = start + node.length;
-    final caretOffset = _selection.extentOffset;
+    final caretOffset = _selection!.extentOffset;
     return caretOffset >= start && caretOffset < end;
   }
 
   /// Returns `true` if selection is not collapsed and intersects with this
   /// paragraph.
   bool get isSelectionVisible {
-    if (_selection.isCollapsed) return false;
-    return intersectsWithSelection(_selection);
+    if (_selection!.isCollapsed) return false;
+    return intersectsWithSelection(_selection!);
   }
 
   void markNeedsCursorPaint() {
@@ -186,14 +186,14 @@ class RenderEditableProxyBox extends RenderBox
   void attach(PipelineOwner owner) {
     super.attach(owner);
     _showCursor.addListener(markNeedsCursorPaint);
-    _renderContext.addBox(this);
-    _renderContext.markDirty(this, _isDirty);
+    _renderContext!.addBox(this);
+    _renderContext!.markDirty(this, _isDirty);
   }
 
   @override
   void detach() {
     _showCursor.removeListener(markNeedsCursorPaint);
-    _renderContext.removeBox(this);
+    _renderContext!.removeBox(this);
     super.detach();
   }
 
@@ -205,14 +205,14 @@ class RenderEditableProxyBox extends RenderBox
     // Indicate to render context that this object can be used by other
     // layers (selection overlay, for instance).
     _isDirty = false;
-    _renderContext.markDirty(this, false);
+    _renderContext!.markDirty(this, false);
   }
 
   @override
   void markNeedsLayout() {
     // Temporarily remove this object from the render context.
     _isDirty = true;
-    _renderContext.markDirty(this, true);
+    _renderContext!.markDirty(this, true);
     super.markNeedsLayout();
   }
 
@@ -232,7 +232,7 @@ class RenderEditableProxyBox extends RenderBox
 
   void _paintCursor(PaintingContext context, Offset offset) {
     final caretOffset =
-        getOffsetForCaret(_selection.extent, _cursorPainter.prototype);
+        getOffsetForCaret(_selection!.extent, _cursorPainter.prototype);
     _cursorPainter.paint(context.canvas, caretOffset + offset);
   }
 
@@ -240,7 +240,7 @@ class RenderEditableProxyBox extends RenderBox
   bool hitTestSelf(Offset position) => true;
 
   @override
-  bool hitTest(HitTestResult result, {Offset position}) {
+  bool hitTest(HitTestResult result, {required Offset position}) {
     if (size.contains(position)) {
       result.add(BoxHitTestEntry(this, position));
       return true;
@@ -253,39 +253,39 @@ class RenderEditableProxyBox extends RenderBox
   //
 
   @override
-  double get preferredLineHeight => child.preferredLineHeight;
+  double get preferredLineHeight => child!.preferredLineHeight;
 
   @override
-  SelectionOrder get selectionOrder => child.selectionOrder;
+  SelectionOrder get selectionOrder => child!.selectionOrder;
 
   @override
   void paintSelection(PaintingContext context, Offset offset,
-          TextSelection selection, Color selectionColor) =>
-      child.paintSelection(context, offset, selection, selectionColor);
+          TextSelection? selection, Color selectionColor) =>
+      child!.paintSelection(context, offset, selection, selectionColor);
 
   @override
-  Offset getOffsetForCaret(TextPosition position, Rect caretPrototype) =>
-      child.getOffsetForCaret(position, caretPrototype);
+  Offset getOffsetForCaret(TextPosition position, Rect? caretPrototype) =>
+      child!.getOffsetForCaret(position, caretPrototype);
 
   @override
-  TextSelection getLocalSelection(TextSelection documentSelection) =>
-      child.getLocalSelection(documentSelection);
+  TextSelection? getLocalSelection(TextSelection documentSelection) =>
+      child!.getLocalSelection(documentSelection);
 
   @override
   bool intersectsWithSelection(TextSelection selection) =>
-      child.intersectsWithSelection(selection);
+      child!.intersectsWithSelection(selection);
 
   @override
-  List<ui.TextBox> getEndpointsForSelection(TextSelection selection) =>
-      child.getEndpointsForSelection(selection);
+  List<ui.TextBox> getEndpointsForSelection(TextSelection? selection) =>
+      child!.getEndpointsForSelection(selection);
 
   @override
   ui.TextPosition getPositionForOffset(ui.Offset offset) =>
-      child.getPositionForOffset(offset);
+      child!.getPositionForOffset(offset);
 
   @override
   TextRange getWordBoundary(ui.TextPosition position) =>
-      child.getWordBoundary(position);
+      child!.getWordBoundary(position);
 }
 
 enum SelectionOrder {
@@ -301,7 +301,7 @@ abstract class RenderEditableBox extends RenderBox {
   double get preferredLineHeight;
 
   TextPosition getPositionForOffset(Offset offset);
-  List<ui.TextBox> getEndpointsForSelection(TextSelection selection);
+  List<ui.TextBox> getEndpointsForSelection(TextSelection? selection);
 
   /// Returns the text range of the word at the given offset. Characters not
   /// part of a word, such as spaces, symbols, and punctuation, have word breaks
@@ -318,15 +318,15 @@ abstract class RenderEditableBox extends RenderBox {
   SelectionOrder get selectionOrder;
 
   void paintSelection(PaintingContext context, Offset offset,
-      TextSelection selection, Color selectionColor);
+      TextSelection? selection, Color selectionColor);
 
-  Offset getOffsetForCaret(TextPosition position, Rect caretPrototype);
+  Offset getOffsetForCaret(TextPosition position, Rect? caretPrototype);
 
   /// Returns part of [documentSelection] local to this box. May return
   /// `null`.
   ///
   /// [documentSelection] must not be collapsed.
-  TextSelection getLocalSelection(TextSelection documentSelection) {
+  TextSelection? getLocalSelection(TextSelection documentSelection) {
     if (!intersectsWithSelection(documentSelection)) return null;
 
     final nodeBase = node.documentOffset;

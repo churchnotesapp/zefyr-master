@@ -19,9 +19,9 @@ import 'toolbar.dart';
 class ZefyrButton extends StatelessWidget {
   /// Creates a toolbar button with an icon.
   ZefyrButton.icon({
-    @required this.action,
-    @required IconData icon,
-    double iconSize,
+    required this.action,
+    required IconData icon,
+    double? iconSize,
     this.onPressed,
   })  : assert(action != null),
         assert(icon != null),
@@ -36,9 +36,9 @@ class ZefyrButton extends StatelessWidget {
   /// Note that [ZefyrButton] has fixed width and does not expand to accommodate
   /// long texts.
   ZefyrButton.text({
-    @required this.action,
-    @required String text,
-    TextStyle style,
+    required this.action,
+    required String text,
+    TextStyle? style,
     this.onPressed,
   })  : assert(action != null),
         assert(text != null),
@@ -50,13 +50,13 @@ class ZefyrButton extends StatelessWidget {
 
   /// Toolbar action associated with this button.
   final ZefyrToolbarAction action;
-  final IconData _icon;
-  final double _iconSize;
-  final String _text;
-  final TextStyle _textStyle;
+  final IconData? _icon;
+  final double? _iconSize;
+  final String? _text;
+  final TextStyle? _textStyle;
 
   /// Callback to trigger when this button is tapped.
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   bool get isAttributeAction {
     return kZefyrToolbarAttributeActions.keys.contains(action);
@@ -64,13 +64,13 @@ class ZefyrButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final toolbar = ZefyrToolbar.of(context);
+    final toolbar = ZefyrToolbar.of(context)!;
     final editor = toolbar.editor;
-    final toolbarTheme = ZefyrTheme.of(context).toolbarTheme;
+    final toolbarTheme = ZefyrTheme.of(context)!.toolbarTheme;
     final pressedHandler = _getPressedHandler(editor, toolbar);
     final iconColor = (pressedHandler == null)
-        ? toolbarTheme.disabledIconColor
-        : toolbarTheme.iconColor;
+        ? toolbarTheme!.disabledIconColor
+        : toolbarTheme!.iconColor;
     if (_icon != null) {
       return RawZefyrButton.icon(
         action: action,
@@ -86,44 +86,44 @@ class ZefyrButton extends StatelessWidget {
       style = style.copyWith(color: iconColor);
       return RawZefyrButton(
         action: action,
-        child: Text(_text, style: style),
+        child: Text(_text!, style: style),
         color: _getColor(editor, toolbarTheme),
         onPressed: _getPressedHandler(editor, toolbar),
       );
     }
   }
 
-  Color _getColor(ZefyrScope editor, ToolbarTheme theme) {
+  Color? _getColor(ZefyrScope? editor, ToolbarTheme? theme) {
     if (isAttributeAction) {
       final attribute = kZefyrToolbarAttributeActions[action];
       final isToggled = (attribute is NotusAttribute)
-          ? editor.selectionStyle.containsSame(attribute)
-          : editor.selectionStyle.contains(attribute);
-      return isToggled ? theme.toggleColor : null;
+          ? editor!.selectionStyle!.containsSame(attribute)
+          : editor!.selectionStyle!.contains(attribute!);
+      return isToggled ? theme!.toggleColor : null;
     }
     return null;
   }
 
-  VoidCallback _getPressedHandler(
-      ZefyrScope editor, ZefyrToolbarState toolbar) {
+  VoidCallback? _getPressedHandler(
+      ZefyrScope? editor, ZefyrToolbarState toolbar) {
     if (onPressed != null) {
       return onPressed;
     } else if (isAttributeAction) {
       final attribute = kZefyrToolbarAttributeActions[action];
       if (attribute is NotusAttribute) {
-        return () => _toggleAttribute(attribute, editor);
+        return () => _toggleAttribute(attribute, editor!);
       }
     } else if (action == ZefyrToolbarAction.close) {
       return () => toolbar.closeOverlay();
     } else if (action == ZefyrToolbarAction.hideKeyboard) {
-      return () => editor.hideKeyboard();
+      return () => editor!.hideKeyboard();
     }
 
     return null;
   }
 
   void _toggleAttribute(NotusAttribute attribute, ZefyrScope editor) {
-    final isToggled = editor.selectionStyle.containsSame(attribute);
+    final isToggled = editor.selectionStyle!.containsSame(attribute);
     if (isToggled) {
       editor.formatSelection(attribute.unset);
     } else {
@@ -140,21 +140,21 @@ class ZefyrButton extends StatelessWidget {
 ///     action-specific logic.
 class RawZefyrButton extends StatelessWidget {
   const RawZefyrButton({
-    Key key,
-    @required this.action,
-    @required this.child,
-    @required this.color,
-    @required this.onPressed,
+    Key? key,
+    required this.action,
+    required this.child,
+    required this.color,
+    required this.onPressed,
   }) : super(key: key);
 
   /// Creates a [RawZefyrButton] containing an icon.
   RawZefyrButton.icon({
-    @required this.action,
-    @required IconData icon,
-    double size,
-    Color iconColor,
-    @required this.color,
-    @required this.onPressed,
+    required this.action,
+    required IconData? icon,
+    double? size,
+    Color? iconColor,
+    required this.color,
+    required this.onPressed,
   })  : child = Icon(icon, size: size, color: iconColor),
         super();
 
@@ -165,10 +165,10 @@ class RawZefyrButton extends StatelessWidget {
   final Widget child;
 
   /// Background color of this button.
-  final Color color;
+  final Color? color;
 
   /// Callback to trigger when this button is pressed.
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   /// Returns `true` if this button is currently toggled on.
   bool get isToggled => color != null;
@@ -199,7 +199,7 @@ class RawZefyrButton extends StatelessWidget {
 /// When pressed, this button displays overlay toolbar with three
 /// buttons for each heading level.
 class HeadingButton extends StatefulWidget {
-  const HeadingButton({Key key}) : super(key: key);
+  const HeadingButton({Key? key}) : super(key: key);
 
   @override
   _HeadingButtonState createState() => _HeadingButtonState();
@@ -208,7 +208,7 @@ class HeadingButton extends StatefulWidget {
 class _HeadingButtonState extends State<HeadingButton> {
   @override
   Widget build(BuildContext context) {
-    final toolbar = ZefyrToolbar.of(context);
+    final toolbar = ZefyrToolbar.of(context)!;
     return toolbar.buildButton(
       context,
       ZefyrToolbarAction.heading,
@@ -217,12 +217,12 @@ class _HeadingButtonState extends State<HeadingButton> {
   }
 
   void showOverlay() {
-    final toolbar = ZefyrToolbar.of(context);
+    final toolbar = ZefyrToolbar.of(context)!;
     toolbar.showOverlay(buildOverlay);
   }
 
   Widget buildOverlay(BuildContext context) {
-    final toolbar = ZefyrToolbar.of(context);
+    final toolbar = ZefyrToolbar.of(context)!;
     final buttons = Row(
       children: <Widget>[
         SizedBox(width: 8.0),
@@ -240,7 +240,7 @@ class _HeadingButtonState extends State<HeadingButton> {
 /// When pressed, this button displays overlay toolbar with three
 /// buttons for each heading level.
 class ImageButton extends StatefulWidget {
-  const ImageButton({Key key}) : super(key: key);
+  const ImageButton({Key? key}) : super(key: key);
 
   @override
   _ImageButtonState createState() => _ImageButtonState();
@@ -249,7 +249,7 @@ class ImageButton extends StatefulWidget {
 class _ImageButtonState extends State<ImageButton> {
   @override
   Widget build(BuildContext context) {
-    final toolbar = ZefyrToolbar.of(context);
+    final toolbar = ZefyrToolbar.of(context)!;
     return toolbar.buildButton(
       context,
       ZefyrToolbarAction.image,
@@ -258,12 +258,12 @@ class _ImageButtonState extends State<ImageButton> {
   }
 
   void showOverlay() {
-    final toolbar = ZefyrToolbar.of(context);
+    final toolbar = ZefyrToolbar.of(context)!;
     toolbar.showOverlay(buildOverlay);
   }
 
   Widget buildOverlay(BuildContext context) {
-    final toolbar = ZefyrToolbar.of(context);
+    final toolbar = ZefyrToolbar.of(context)!;
     final buttons = Row(
       children: <Widget>[
         SizedBox(width: 8.0),
@@ -277,18 +277,18 @@ class _ImageButtonState extends State<ImageButton> {
   }
 
   void _pickFromCamera() async {
-    final editor = ZefyrToolbar.of(context).editor;
+    final editor = ZefyrToolbar.of(context)!.editor!;
     final image =
-        await editor.imageDelegate.pickImage(editor.imageDelegate.cameraSource);
+        await editor.imageDelegate!.pickImage(editor.imageDelegate!.cameraSource)!;
     if (image != null) {
       editor.formatSelection(NotusAttribute.embed.image(image));
     }
   }
 
   void _pickFromGallery() async {
-    final editor = ZefyrToolbar.of(context).editor;
-    final image = await editor.imageDelegate
-        .pickImage(editor.imageDelegate.gallerySource);
+    final editor = ZefyrToolbar.of(context)!.editor!;
+    final image = await editor.imageDelegate!
+        .pickImage(editor.imageDelegate!.gallerySource)!;
     if (image != null) {
       editor.formatSelection(NotusAttribute.embed.image(image));
     }
@@ -296,7 +296,7 @@ class _ImageButtonState extends State<ImageButton> {
 }
 
 class LinkButton extends StatefulWidget {
-  const LinkButton({Key key}) : super(key: key);
+  const LinkButton({Key? key}) : super(key: key);
 
   @override
   _LinkButtonState createState() => _LinkButtonState();
@@ -304,17 +304,17 @@ class LinkButton extends StatefulWidget {
 
 class _LinkButtonState extends State<LinkButton> {
   final TextEditingController _inputController = TextEditingController();
-  Key _inputKey;
+  Key? _inputKey;
   bool _formatError = false;
 
   bool get isEditing => _inputKey != null;
 
   @override
   Widget build(BuildContext context) {
-    final toolbar = ZefyrToolbar.of(context);
-    final editor = toolbar.editor;
+    final toolbar = ZefyrToolbar.of(context)!;
+    final editor = toolbar.editor!;
     final enabled =
-        hasLink(editor.selectionStyle) || !editor.selection.isCollapsed;
+        hasLink(editor.selectionStyle!) || !editor.selection!.isCollapsed;
 
     return toolbar.buildButton(
       context,
@@ -325,22 +325,22 @@ class _LinkButtonState extends State<LinkButton> {
 
   bool hasLink(NotusStyle style) => style.contains(NotusAttribute.link);
 
-  String getLink([String defaultValue]) {
-    final editor = ZefyrToolbar.of(context).editor;
-    final attrs = editor.selectionStyle;
+  String? getLink([String? defaultValue]) {
+    final editor = ZefyrToolbar.of(context)!.editor!;
+    final attrs = editor.selectionStyle!;
     if (hasLink(attrs)) {
-      return attrs.value(NotusAttribute.link);
+      return attrs.value(NotusAttribute.link as NotusAttributeKey<String>);
     }
     return defaultValue;
   }
 
   void showOverlay() {
-    final toolbar = ZefyrToolbar.of(context);
+    final toolbar = ZefyrToolbar.of(context)!;
     toolbar.showOverlay(buildOverlay).whenComplete(cancelEdit);
   }
 
   void closeOverlay() {
-    final toolbar = ZefyrToolbar.of(context);
+    final toolbar = ZefyrToolbar.of(context)!;
     toolbar.closeOverlay();
   }
 
@@ -348,9 +348,9 @@ class _LinkButtonState extends State<LinkButton> {
     final toolbar = ZefyrToolbar.of(context);
     setState(() {
       _inputKey = UniqueKey();
-      _inputController.text = getLink('https://');
+      _inputController.text = getLink('https://')!;
       _inputController.addListener(_handleInputChange);
-      toolbar.markNeedsRebuild();
+      toolbar!.markNeedsRebuild();
     });
   }
 
@@ -363,7 +363,7 @@ class _LinkButtonState extends State<LinkButton> {
           var uri = Uri.parse(_inputController.text);
           if ((uri.isScheme('https') || uri.isScheme('http')) &&
               uri.host.isNotEmpty) {
-            toolbar.editor.formatSelection(
+            toolbar!.editor!.formatSelection(
                 NotusAttribute.link.fromString(_inputController.text));
           } else {
             error = true;
@@ -374,47 +374,47 @@ class _LinkButtonState extends State<LinkButton> {
       }
       if (error) {
         _formatError = error;
-        toolbar.markNeedsRebuild();
+        toolbar!.markNeedsRebuild();
       } else {
         _inputKey = null;
         _inputController.text = '';
         _inputController.removeListener(_handleInputChange);
-        toolbar.markNeedsRebuild();
-        toolbar.editor.focus();
+        toolbar!.markNeedsRebuild();
+        toolbar.editor!.focus();
       }
     });
   }
 
   void cancelEdit() {
     if (mounted) {
-      final editor = ZefyrToolbar.of(context).editor;
+      final editor = ZefyrToolbar.of(context)!.editor;
       setState(() {
         _inputKey = null;
         _inputController.text = '';
         _inputController.removeListener(_handleInputChange);
-        editor.focus();
+        editor!.focus();
       });
     }
   }
 
   void unlink() {
-    final editor = ZefyrToolbar.of(context).editor;
+    final editor = ZefyrToolbar.of(context)!.editor!;
     editor.formatSelection(NotusAttribute.link.unset);
     closeOverlay();
   }
 
   void copyToClipboard() {
-    var link = getLink();
+    var link = getLink()!;
     assert(link != null);
     Clipboard.setData(ClipboardData(text: link));
   }
 
   void openInBrowser() async {
-    final editor = ZefyrToolbar.of(context).editor;
-    var link = getLink();
+    final editor = ZefyrToolbar.of(context)!.editor;
+    var link = getLink()!;
     assert(link != null);
     if (await canLaunch(link)) {
-      editor.hideKeyboard();
+      editor!.hideKeyboard();
       await launch(link, forceWebView: true);
     }
   }
@@ -423,17 +423,17 @@ class _LinkButtonState extends State<LinkButton> {
     final toolbar = ZefyrToolbar.of(context);
     setState(() {
       _formatError = false;
-      toolbar.markNeedsRebuild();
+      toolbar!.markNeedsRebuild();
     });
   }
 
   Widget buildOverlay(BuildContext context) {
-    final toolbar = ZefyrToolbar.of(context);
-    final style = toolbar.editor.selectionStyle;
+    final toolbar = ZefyrToolbar.of(context)!;
+    final style = toolbar.editor!.selectionStyle!;
 
-    var value = 'Tap to edit link';
+    String? value = 'Tap to edit link';
     if (style.contains(NotusAttribute.link)) {
-      value = style.value(NotusAttribute.link);
+      value = style.value(NotusAttribute.link as NotusAttributeKey<String>);
     }
     final clipboardEnabled = value != 'Tap to edit link';
     final body = !isEditing
@@ -481,7 +481,7 @@ class _LinkInput extends StatefulWidget {
   final bool formatError;
 
   const _LinkInput(
-      {Key key, @required this.controller, this.formatError = false})
+      {Key? key, required this.controller, this.formatError = false})
       : super(key: key);
 
   @override
@@ -493,7 +493,7 @@ class _LinkInput extends StatefulWidget {
 class _LinkInputState extends State<_LinkInput> {
   final FocusNode _focusNode = FocusNode();
 
-  ZefyrScope _editor;
+  ZefyrScope? _editor;
   bool _didAutoFocus = false;
 
   @override
@@ -504,12 +504,12 @@ class _LinkInputState extends State<_LinkInput> {
       _didAutoFocus = true;
     }
 
-    final toolbar = ZefyrToolbar.of(context);
+    final toolbar = ZefyrToolbar.of(context)!;
 
     if (_editor != toolbar.editor) {
       _editor?.toolbarFocusNode = null;
       _editor = toolbar.editor;
-      _editor.toolbarFocusNode = _focusNode;
+      _editor!.toolbarFocusNode = _focusNode;
     }
   }
 
@@ -524,10 +524,10 @@ class _LinkInputState extends State<_LinkInput> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final toolbarTheme = ZefyrTheme.of(context).toolbarTheme;
+    final toolbarTheme = ZefyrTheme.of(context)!.toolbarTheme!;
     final color =
         widget.formatError ? Colors.redAccent : toolbarTheme.iconColor;
-    final style = theme.textTheme.subtitle1.copyWith(color: color);
+    final style = theme.textTheme.subtitle1!.copyWith(color: color);
     return TextField(
       style: style,
       keyboardType: TextInputType.url,
@@ -546,15 +546,15 @@ class _LinkInputState extends State<_LinkInput> {
 }
 
 class _LinkView extends StatelessWidget {
-  const _LinkView({Key key, @required this.value, this.onTap})
+  const _LinkView({Key? key, required this.value, this.onTap})
       : super(key: key);
-  final String value;
-  final VoidCallback onTap;
+  final String? value;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final toolbarTheme = ZefyrTheme.of(context).toolbarTheme;
+    final toolbarTheme = ZefyrTheme.of(context)!.toolbarTheme!;
     Widget widget = ClipRect(
       child: ListView(
         scrollDirection: Axis.horizontal,
@@ -564,10 +564,10 @@ class _LinkView extends StatelessWidget {
             constraints: BoxConstraints(minHeight: ZefyrToolbar.kToolbarHeight),
             padding: const EdgeInsets.all(10.0),
             child: Text(
-              value,
+              value!,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.subtitle1
+              style: theme.textTheme.subtitle1!
                   .copyWith(color: toolbarTheme.disabledIconColor),
             ),
           )

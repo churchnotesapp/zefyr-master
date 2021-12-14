@@ -8,7 +8,7 @@ import 'package:zefyr/zefyr.dart';
 
 void main() {
   group('$ZefyrScope', () {
-    ZefyrScope scope;
+    late ZefyrScope scope;
 
     setUp(() {
       WidgetsFlutterBinding.ensureInitialized();
@@ -66,28 +66,28 @@ void main() {
         notified = true;
       });
 
-      scope.controller.replaceText(0, 0, 'Hello');
+      scope.controller!.replaceText(0, 0, 'Hello');
       expect(notified, isFalse);
-      scope.controller.updateSelection(TextSelection.collapsed(offset: 4));
+      scope.controller!.updateSelection(TextSelection.collapsed(offset: 4));
       expect(notified, isTrue);
     });
   });
 }
 
-class _TestImageDelegate implements ZefyrImageDelegate<String> {
+class _TestImageDelegate implements ZefyrImageDelegate<String?> {
   @override
-  Widget buildImage(BuildContext context, String key) {
+  Widget? buildImage(BuildContext context, String? key) {
     return null;
   }
 
   @override
-  String get cameraSource => null;
+  String? get cameraSource => null;
 
   @override
-  String get gallerySource => null;
+  String? get gallerySource => null;
 
   @override
-  Future<String> pickImage(String source) {
+  Future<String>? pickImage(String? source) {
     return null;
   }
 }

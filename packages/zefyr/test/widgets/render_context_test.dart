@@ -9,7 +9,7 @@ import 'package:zefyr/zefyr.dart';
 
 void main() {
   group('$ZefyrRenderContext', () {
-    ZefyrRenderContext context;
+    ZefyrRenderContext? context;
 
     setUp(() {
       WidgetsFlutterBinding.ensureInitialized();
@@ -18,37 +18,37 @@ void main() {
 
     test('adds to dirty list first', () {
       var p = createParagraph(context);
-      context.addBox(p);
-      expect(context.dirty, isNotEmpty);
-      expect(context.active, isEmpty);
-      expect(context.dirty, contains(p));
+      context!.addBox(p);
+      expect(context!.dirty, isNotEmpty);
+      expect(context!.active, isEmpty);
+      expect(context!.dirty, contains(p));
     });
 
     test('removes from dirty list', () {
       var p = createParagraph(context);
-      context.addBox(p);
-      expect(context.dirty, isNotEmpty);
-      context.removeBox(p);
-      expect(context.dirty, isEmpty);
+      context!.addBox(p);
+      expect(context!.dirty, isNotEmpty);
+      context!.removeBox(p);
+      expect(context!.dirty, isEmpty);
     });
 
     test('markDirty moves between active and dirty lists', () {
       var p = createParagraph(context);
-      context.addBox(p);
-      context.markDirty(p, false);
-      expect(context.dirty, isEmpty);
-      expect(context.active, isNotEmpty);
-      context.markDirty(p, true);
-      expect(context.dirty, isNotEmpty);
-      expect(context.active, isEmpty);
+      context!.addBox(p);
+      context!.markDirty(p, false);
+      expect(context!.dirty, isEmpty);
+      expect(context!.active, isNotEmpty);
+      context!.markDirty(p, true);
+      expect(context!.dirty, isNotEmpty);
+      expect(context!.active, isEmpty);
     });
 
     test('finds paragraph for text offset', () {
       var p = createParagraph(context);
-      context.addBox(p);
-      expect(context.boxForTextOffset(0), isNull);
-      context.markDirty(p, false);
-      expect(context.boxForTextOffset(0), p);
+      context!.addBox(p);
+      expect(context!.boxForTextOffset(0), isNull);
+      context!.markDirty(p, false);
+      expect(context!.boxForTextOffset(0), p);
     });
 
     testWidgets('notifyListeners is delayed to next frame', (tester) async {
@@ -70,10 +70,10 @@ void main() {
   });
 }
 
-RenderEditableProxyBox createParagraph(ZefyrRenderContext viewport) {
+RenderEditableProxyBox createParagraph(ZefyrRenderContext? viewport) {
   final doc = NotusDocument();
   doc.insert(0, 'This House Is A Circus');
-  final LineNode node = doc.root.children.first;
+  final LineNode node = doc.root.children.first as LineNode;
   final link = LayerLink();
   final showCursor = ValueNotifier<bool>(true);
   final selection = TextSelection.collapsed(offset: 0);

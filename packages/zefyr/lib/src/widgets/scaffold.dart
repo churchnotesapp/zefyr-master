@@ -4,14 +4,14 @@ import 'editor.dart';
 
 /// Provides necessary layout for [ZefyrEditor].
 class ZefyrScaffold extends StatefulWidget {
-  final Widget child;
-  final Widget trailingChild;
+  final Widget? child;
+  final Widget? trailingChild;
 
-  const ZefyrScaffold({Key key, this.child, this.trailingChild}) : super(key: key);
+  const ZefyrScaffold({Key? key, this.child, this.trailingChild}) : super(key: key);
 
-  static ZefyrScaffoldState of(BuildContext context) {
+  static ZefyrScaffoldState? of(BuildContext context) {
     final widget =
-        context.dependOnInheritedWidgetOfExactType<_ZefyrScaffoldAccess>();
+        context.dependOnInheritedWidgetOfExactType<_ZefyrScaffoldAccess>()!;
     return widget.scaffold;
   }
 
@@ -20,7 +20,7 @@ class ZefyrScaffold extends StatefulWidget {
 }
 
 class ZefyrScaffoldState extends State<ZefyrScaffold> {
-  WidgetBuilder _toolbarBuilder;
+  WidgetBuilder? _toolbarBuilder;
 
   void showToolbar(WidgetBuilder builder) {
     setState(() {
@@ -39,12 +39,12 @@ class ZefyrScaffoldState extends State<ZefyrScaffold> {
   @override
   Widget build(BuildContext context) {
     final toolbar =
-        (_toolbarBuilder == null) ? Container() : _toolbarBuilder(context);
+        (_toolbarBuilder == null) ? Container() : _toolbarBuilder!(context);
     return _ZefyrScaffoldAccess(
       scaffold: this,
       child: Column(
         children: <Widget>[
-          Expanded(child: widget.child),
+          Expanded(child: widget.child!),
           toolbar,
         ],
       ),
@@ -53,9 +53,9 @@ class ZefyrScaffoldState extends State<ZefyrScaffold> {
 }
 
 class _ZefyrScaffoldAccess extends InheritedWidget {
-  final ZefyrScaffoldState scaffold;
+  final ZefyrScaffoldState? scaffold;
 
-  _ZefyrScaffoldAccess({Widget child, this.scaffold}) : super(child: child);
+  _ZefyrScaffoldAccess({required Widget child, this.scaffold}) : super(child: child);
 
   @override
   bool updateShouldNotify(_ZefyrScaffoldAccess oldWidget) {

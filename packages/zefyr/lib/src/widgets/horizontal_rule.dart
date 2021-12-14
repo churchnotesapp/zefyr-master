@@ -11,7 +11,7 @@ import 'package:notus/notus.dart';
 import 'editable_box.dart';
 
 class ZefyrHorizontalRule extends LeafRenderObjectWidget {
-  ZefyrHorizontalRule({@required this.node}) : assert(node != null);
+  ZefyrHorizontalRule({required this.node}) : assert(node != null);
 
   final EmbedNode node;
 
@@ -33,7 +33,7 @@ class RenderHorizontalRule extends RenderEditableBox {
   static const _kHeight = _kThickness + _kPaddingBottom;
 
   RenderHorizontalRule({
-    @required EmbedNode node,
+    required EmbedNode node,
   }) : _node = node;
 
   @override
@@ -52,8 +52,8 @@ class RenderHorizontalRule extends RenderEditableBox {
   SelectionOrder get selectionOrder => SelectionOrder.background;
 
   @override
-  List<ui.TextBox> getEndpointsForSelection(TextSelection selection) {
-    final local = getLocalSelection(selection);
+  List<ui.TextBox> getEndpointsForSelection(TextSelection? selection) {
+    final local = getLocalSelection(selection!)!;
     if (local.isCollapsed) {
       final dx = local.extentOffset == 0 ? 0.0 : size.width;
       return [
@@ -99,8 +99,8 @@ class RenderHorizontalRule extends RenderEditableBox {
 
   @override
   void paintSelection(PaintingContext context, Offset offset,
-      TextSelection selection, Color selectionColor) {
-    final localSelection = getLocalSelection(selection);
+      TextSelection? selection, Color selectionColor) {
+    final localSelection = getLocalSelection(selection!)!;
     assert(localSelection != null);
     if (!localSelection.isCollapsed) {
       final paint = Paint()..color = selectionColor;
@@ -110,7 +110,7 @@ class RenderHorizontalRule extends RenderEditableBox {
   }
 
   @override
-  Offset getOffsetForCaret(ui.TextPosition position, ui.Rect caretPrototype) {
+  Offset getOffsetForCaret(ui.TextPosition position, ui.Rect? caretPrototype) {
     final pos = position.offset - node.documentOffset;
     var caretOffset = Offset.zero;
     if (pos == 1) {

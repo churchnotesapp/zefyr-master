@@ -16,8 +16,8 @@ void main() {
     doc.insert(0, 'This House Is A Circus');
     final text = TextSpan(text: 'This House Is A Circus');
 
-    ZefyrRenderContext renderContext;
-    RenderZefyrParagraph p;
+    late ZefyrRenderContext renderContext;
+    RenderZefyrParagraph? p;
 
     setUp(() {
       WidgetsFlutterBinding.ensureInitialized();
@@ -32,9 +32,9 @@ void main() {
     test('it registers with viewport', () {
       var owner = PipelineOwner();
       expect(renderContext.active, isNot(contains(p)));
-      p.attach(owner);
+      p!.attach(owner);
       expect(renderContext.dirty, contains(p));
-      p.layout(BoxConstraints());
+      p!.layout(BoxConstraints());
       expect(renderContext.active, contains(p));
     }, skip: 'TODO: move to RenderEditableProxyBox');
   });

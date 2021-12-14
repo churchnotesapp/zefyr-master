@@ -38,10 +38,10 @@ class ZefyrController extends ChangeNotifier {
   TextSelection get selection => _selection;
   TextSelection _selection = _kZeroSelection;
 
-  ChangeSource _lastChangeSource;
+  ChangeSource? _lastChangeSource;
 
   /// Source of the last text or selection change.
-  ChangeSource get lastChangeSource => _lastChangeSource;
+  ChangeSource? get lastChangeSource => _lastChangeSource;
 
   /// Store any styles attribute that got toggled by the tap of a button
   /// and that has not been applied yet.
@@ -60,7 +60,7 @@ class ZefyrController extends ChangeNotifier {
 
   // Updates selection without triggering notifications to listeners.
   void _updateSelectionSilent(TextSelection value,
-      {ChangeSource source = ChangeSource.remote}) {
+      {ChangeSource? source = ChangeSource.remote}) {
     assert(value != null && source != null);
     _selection = value;
     _lastChangeSource = source;
@@ -81,7 +81,7 @@ class ZefyrController extends ChangeNotifier {
   ///
   /// If composing this change fails then this method throws [ComposeError].
   void compose(Delta change,
-      {TextSelection selection, ChangeSource source = ChangeSource.remote}) {
+      {TextSelection? selection, ChangeSource source = ChangeSource.remote}) {
     if (change.isNotEmpty) {
       document.compose(change, source);
     }
@@ -114,8 +114,8 @@ class ZefyrController extends ChangeNotifier {
   ///
   /// Optionally updates selection if provided.
   void replaceText(int index, int length, String text,
-      {TextSelection selection}) {
-    Delta delta;
+      {TextSelection? selection}) {
+    Delta? delta;
 
     if (length > 0 || text.isNotEmpty) {
       delta = document.replace(index, length, text);

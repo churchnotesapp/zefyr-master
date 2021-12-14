@@ -18,9 +18,9 @@ import 'theme.dart';
 @experimental
 class ZefyrView extends StatefulWidget {
   final NotusDocument document;
-  final ZefyrImageDelegate imageDelegate;
+  final ZefyrImageDelegate? imageDelegate;
 
-  const ZefyrView({Key key, @required this.document, this.imageDelegate})
+  const ZefyrView({Key? key, required this.document, this.imageDelegate})
       : super(key: key);
 
   @override
@@ -28,10 +28,10 @@ class ZefyrView extends StatefulWidget {
 }
 
 class ZefyrViewState extends State<ZefyrView> {
-  ZefyrScope _scope;
-  ZefyrThemeData _themeData;
+  ZefyrScope? _scope;
+  late ZefyrThemeData _themeData;
 
-  ZefyrImageDelegate get imageDelegate => widget.imageDelegate;
+  ZefyrImageDelegate? get imageDelegate => widget.imageDelegate;
 
   @override
   void initState() {
@@ -42,7 +42,7 @@ class ZefyrViewState extends State<ZefyrView> {
   @override
   void didUpdateWidget(ZefyrView oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _scope.imageDelegate = widget.imageDelegate;
+    _scope!.imageDelegate = widget.imageDelegate;
   }
 
   @override
@@ -57,7 +57,7 @@ class ZefyrViewState extends State<ZefyrView> {
 
   @override
   void dispose() {
-    _scope.dispose();
+    _scope!.dispose();
     super.dispose();
   }
 
@@ -93,8 +93,8 @@ class ZefyrViewState extends State<ZefyrView> {
       return ZefyrParagraph(node: node);
     }
 
-    final BlockNode block = node;
-    final blockStyle = block.style.get(NotusAttribute.block);
+    final BlockNode block = node as BlockNode;
+    final blockStyle = block.style.get(NotusAttribute.block as NotusAttributeKey<String>);
     if (blockStyle == NotusAttribute.block.code) {
       return ZefyrCode(node: block);
     } else if (blockStyle == NotusAttribute.block.bulletList) {

@@ -36,10 +36,10 @@ import 'editable_box.dart';
 /// itself by calling [removeBox].
 class ZefyrRenderContext extends ChangeNotifier {
   final Set<RenderEditableProxyBox> _dirtyBoxes = {};
-  final Set<RenderEditableProxyBox> _activeBoxes = {};
+  final Set<RenderEditableProxyBox?> _activeBoxes = {};
 
   Set<RenderEditableProxyBox> get dirty => _dirtyBoxes;
-  Set<RenderEditableProxyBox> get active => _activeBoxes;
+  Set<RenderEditableProxyBox?> get active => _activeBoxes;
 
   bool _disposed = false;
 
@@ -76,20 +76,20 @@ class ZefyrRenderContext extends ChangeNotifier {
   }
 
   /// Returns box containing character at specified document [offset].
-  RenderEditableProxyBox boxForTextOffset(int offset) {
+  RenderEditableProxyBox? boxForTextOffset(int offset) {
     assert(!_disposed);
     return _activeBoxes.firstWhere(
-      (p) => p.node.containsOffset(offset),
+      (p) => p!.node.containsOffset(offset),
       orElse: _null,
     );
   }
 
   /// Returns box located at specified global [point] on the screen or
   /// `null`.
-  RenderEditableProxyBox boxForGlobalPoint(Offset point) {
+  RenderEditableProxyBox? boxForGlobalPoint(Offset? point) {
     assert(!_disposed);
     return _activeBoxes.firstWhere((p) {
-      final localPoint = p.globalToLocal(point);
+      final localPoint = p!.globalToLocal(point!);
       return p.size.contains(localPoint);
     }, orElse: _null);
   }
@@ -101,20 +101,20 @@ class ZefyrRenderContext extends ChangeNotifier {
   /// side of a box, e.g. if vertical offset of this point is inside of one of
   /// the active boxes. If it is then that box is returned. If not then this
   /// method picks a box with shortest vertical distance to this [point].
-  RenderEditableProxyBox closestBoxForGlobalPoint(Offset point) {
+  RenderEditableProxyBox? closestBoxForGlobalPoint(Offset point) {
     assert(!_disposed);
     if (_activeBoxes.isEmpty) return null;
     var box = boxForGlobalPoint(point);
     if (box != null) return box;
 
     box = _activeBoxes.firstWhere((p) {
-      final localPoint = p.globalToLocal(point);
+      final localPoint = p!.globalToLocal(point);
       return (localPoint.dy >= 0 && localPoint.dy < p.size.height);
     }, orElse: _null);
     if (box != null) return box;
 
     box = _activeBoxes.map((p) {
-      final localPoint = p.globalToLocal(point);
+      final localPoint = p!.globalToLocal(point);
       final distance = localPoint.dy - p.size.height;
       return MapEntry(distance.abs(), p);
     }).reduce((a, b) {
@@ -138,7 +138,7 @@ class ZefyrRenderContext extends ChangeNotifier {
   void notifyListeners() {
     /// Ensures listeners are not notified during rendering phase where they
     /// cannot react by updating their state or rebuilding.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       if (_disposed) return;
       super.notifyListeners();
     });

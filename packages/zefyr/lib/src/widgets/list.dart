@@ -10,13 +10,13 @@ import 'theme.dart';
 
 /// Represents number lists and bullet lists in a Zefyr editor.
 class ZefyrList extends StatelessWidget {
-  const ZefyrList({Key key, @required this.node}) : super(key: key);
+  const ZefyrList({Key? key, required this.node}) : super(key: key);
 
   final BlockNode node;
 
   @override
   Widget build(BuildContext context) {
-    final theme = ZefyrTheme.of(context);
+    final theme = ZefyrTheme.of(context)!;
     final items = <Widget>[];
     var index = 1;
     for (var line in node.children) {
@@ -27,8 +27,8 @@ class ZefyrList extends StatelessWidget {
     final isNumberList =
         node.style.get(NotusAttribute.block) == NotusAttribute.block.numberList;
     var padding = isNumberList
-        ? theme.attributeTheme.numberList.padding
-        : theme.attributeTheme.bulletList.padding;
+        ? theme.attributeTheme!.numberList!.padding!
+        : theme.attributeTheme!.bulletList!.padding!;
     padding = padding.copyWith(left: theme.indentWidth);
 
     return Padding(
@@ -38,44 +38,44 @@ class ZefyrList extends StatelessWidget {
   }
 
   Widget _buildItem(Node node, int index) {
-    LineNode line = node;
+    LineNode line = node as LineNode;
     return ZefyrListItem(index: index, node: line);
   }
 }
 
 /// An item in a [ZefyrList].
 class ZefyrListItem extends StatelessWidget {
-  ZefyrListItem({Key key, this.index, this.node}) : super(key: key);
+  ZefyrListItem({Key? key, this.index, this.node}) : super(key: key);
 
-  final int index;
-  final LineNode node;
+  final int? index;
+  final LineNode? node;
 
   @override
   Widget build(BuildContext context) {
-    final BlockNode block = node.parent;
-    final style = block.style.get(NotusAttribute.block);
+    final BlockNode block = node!.parent as BlockNode;
+    final style = block.style.get(NotusAttribute.block as NotusAttributeKey<String>);
     final theme = ZefyrTheme.of(context);
     final blockTheme = (style == NotusAttribute.block.bulletList)
-        ? theme.attributeTheme.bulletList
-        : theme.attributeTheme.numberList;
+        ? theme!.attributeTheme!.bulletList
+        : theme!.attributeTheme!.numberList;
     final bulletText =
         (style == NotusAttribute.block.bulletList) ? '•' : '$index.';
 
     TextStyle textStyle;
     Widget content;
-    EdgeInsets padding;
+    EdgeInsets? padding;
 
-    if (node.style.contains(NotusAttribute.heading)) {
-      final headingTheme = ZefyrHeading.themeOf(node, context);
+    if (node!.style.contains(NotusAttribute.heading)) {
+      final headingTheme = ZefyrHeading.themeOf(node!, context)!;
       textStyle = headingTheme.textStyle;
       padding = headingTheme.padding;
-      content = ZefyrHeading(node: node);
+      content = ZefyrHeading(node: node!);
     } else {
-      textStyle = theme.defaultLineTheme.textStyle;
+      textStyle = theme.defaultLineTheme!.textStyle;
       content = ZefyrLine(
-        node: node,
+        node: node!,
         style: textStyle,
-        padding: blockTheme.linePadding,
+        padding: blockTheme!.linePadding,
       );
       padding = blockTheme.linePadding;
     }

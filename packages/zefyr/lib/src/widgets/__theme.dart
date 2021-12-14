@@ -23,9 +23,9 @@ class ZefyrTheme extends InheritedWidget {
   ///
   /// The [data] and [child] arguments must not be null.
   ZefyrTheme({
-    Key key,
-    @required this.data,
-    @required Widget child,
+    Key? key,
+    required this.data,
+    required Widget child,
   })  : assert(data != null),
         assert(child != null),
         super(key: key, child: child);
@@ -41,30 +41,30 @@ class ZefyrTheme extends InheritedWidget {
   /// Returns `null` if there is no [ZefyrTheme] in the given build context
   /// and [nullOk] is set to `true`. If [nullOk] is set to `false` (default)
   /// then this method asserts.
-  static ZefyrThemeData of(BuildContext context, {bool nullOk = false}) {
+  static ZefyrThemeData? of(BuildContext context, {bool nullOk = false}) {
     final widget = context.dependOnInheritedWidgetOfExactType<ZefyrTheme>();
     if (widget == null && nullOk) return null;
     assert(widget != null,
         '$ZefyrTheme.of() called with a context that does not contain a ZefyrEditor.');
-    return widget.data;
+    return widget!.data;
   }
 }
 
 /// Holds colors and typography styles for [ZefyrEditor].
 class ZefyrThemeData {
-  final TextStyle boldStyle;
-  final TextStyle italicStyle;
-  final TextStyle underlineStyle;
-  final TextStyle linkStyle;
-  final StyleTheme paragraphTheme;
-  final HeadingTheme headingTheme;
-  final BlockTheme blockTheme;
-  final Color selectionColor;
-  final Color cursorColor;
+  final TextStyle? boldStyle;
+  final TextStyle? italicStyle;
+  final TextStyle? underlineStyle;
+  final TextStyle? linkStyle;
+  final StyleTheme? paragraphTheme;
+  final HeadingTheme? headingTheme;
+  final BlockTheme? blockTheme;
+  final Color? selectionColor;
+  final Color? cursorColor;
 
   /// Size of indentation for blocks.
-  final double indentSize;
-  final ZefyrToolbarTheme toolbarTheme;
+  final double? indentSize;
+  final ZefyrToolbarTheme? toolbarTheme;
 
   factory ZefyrThemeData.fallback(BuildContext context) {
     final themeData = Theme.of(context);
@@ -110,18 +110,18 @@ class ZefyrThemeData {
   });
 
   ZefyrThemeData copyWith({
-    TextStyle textStyle,
-    TextStyle boldStyle,
-    TextStyle italicStyle,
-    TextStyle underlineStyle,
-    TextStyle linkStyle,
-    StyleTheme paragraphTheme,
-    HeadingTheme headingTheme,
-    BlockTheme blockTheme,
-    Color selectionColor,
-    Color cursorColor,
-    double indentSize,
-    ZefyrToolbarTheme toolbarTheme,
+    TextStyle? textStyle,
+    TextStyle? boldStyle,
+    TextStyle? italicStyle,
+    TextStyle? underlineStyle,
+    TextStyle? linkStyle,
+    StyleTheme? paragraphTheme,
+    HeadingTheme? headingTheme,
+    BlockTheme? blockTheme,
+    Color? selectionColor,
+    Color? cursorColor,
+    double? indentSize,
+    ZefyrToolbarTheme? toolbarTheme,
   }) {
     return ZefyrThemeData(
       boldStyle: boldStyle ?? this.boldStyle,
@@ -167,9 +167,9 @@ class HeadingTheme {
   final StyleTheme level3;
 
   HeadingTheme({
-    @required this.level1,
-    @required this.level2,
-    @required this.level3,
+    required this.level1,
+    required this.level2,
+    required this.level3,
   });
 
   /// Creates fallback theme for headings.
@@ -179,7 +179,7 @@ class HeadingTheme {
       level1: StyleTheme(
         textStyle: defaultStyle.style.copyWith(
           fontSize: 34.0,
-          color: defaultStyle.style.color.withOpacity(0.70),
+          color: defaultStyle.style.color!.withOpacity(0.70),
           height: 1.15,
           fontWeight: FontWeight.w300,
         ),
@@ -188,7 +188,7 @@ class HeadingTheme {
       level2: StyleTheme(
         textStyle: TextStyle(
           fontSize: 24.0,
-          color: defaultStyle.style.color.withOpacity(0.70),
+          color: defaultStyle.style.color!.withOpacity(0.70),
           height: 1.15,
           fontWeight: FontWeight.normal,
         ),
@@ -197,7 +197,7 @@ class HeadingTheme {
       level3: StyleTheme(
         textStyle: TextStyle(
           fontSize: 20.0,
-          color: defaultStyle.style.color.withOpacity(0.70),
+          color: defaultStyle.style.color!.withOpacity(0.70),
           height: 1.25,
           fontWeight: FontWeight.w500,
         ),
@@ -222,10 +222,10 @@ class BlockTheme {
   final StyleTheme quote;
 
   BlockTheme({
-    @required this.bulletList,
-    @required this.numberList,
-    @required this.quote,
-    @required this.code,
+    required this.bulletList,
+    required this.numberList,
+    required this.quote,
+    required this.code,
   });
 
   /// Creates fallback theme for blocks.
@@ -233,7 +233,7 @@ class BlockTheme {
     final themeData = Theme.of(context);
     final defaultTextStyle = DefaultTextStyle.of(context);
     final padding = const EdgeInsets.symmetric(vertical: 8.0);
-    String fontFamily;
+    String? fontFamily;
     switch (themeData.platform) {
       case TargetPlatform.iOS:
       case TargetPlatform.macOS:
@@ -252,13 +252,13 @@ class BlockTheme {
       numberList: StyleTheme(padding: padding),
       quote: StyleTheme(
         textStyle: TextStyle(
-          color: defaultTextStyle.style.color.withOpacity(0.6),
+          color: defaultTextStyle.style.color!.withOpacity(0.6),
         ),
         padding: padding,
       ),
       code: StyleTheme(
         textStyle: TextStyle(
-          color: defaultTextStyle.style.color.withOpacity(0.8),
+          color: defaultTextStyle.style.color!.withOpacity(0.8),
           fontFamily: fontFamily,
           fontSize: 14.0,
           height: 1.25,
@@ -275,10 +275,10 @@ class BlockTheme {
 /// [ZefyrThemeData.paragraphTheme].
 class StyleTheme {
   /// Text style of this theme.
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   /// Padding to apply around lines of text.
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
 
   /// Creates a new [StyleTheme].
   StyleTheme({
@@ -296,7 +296,7 @@ class ZefyrToolbarTheme {
   final Color toggleColor;
 
   /// Color of button icons.
-  final Color iconColor;
+  final Color? iconColor;
 
   /// Color of button icons in disabled state.
   final Color disabledIconColor;
@@ -317,17 +317,17 @@ class ZefyrToolbarTheme {
   }
 
   ZefyrToolbarTheme._({
-    @required this.color,
-    @required this.toggleColor,
-    @required this.iconColor,
-    @required this.disabledIconColor,
+    required this.color,
+    required this.toggleColor,
+    required this.iconColor,
+    required this.disabledIconColor,
   });
 
   ZefyrToolbarTheme copyWith({
-    Color color,
-    Color toggleColor,
-    Color iconColor,
-    Color disabledIconColor,
+    Color? color,
+    Color? toggleColor,
+    Color? iconColor,
+    Color? disabledIconColor,
   }) {
     return ZefyrToolbarTheme._(
       color: color ?? this.color,

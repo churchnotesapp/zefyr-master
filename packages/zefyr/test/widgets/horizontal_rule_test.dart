@@ -14,7 +14,7 @@ void main() {
       await editor.pumpAndTap();
       await editor.tapButtonWithIcon(Icons.remove);
 
-      LineNode line = editor.document.root.children.last;
+      LineNode line = editor.document.root.children.last as LineNode;
       expect(line.hasEmbed, isTrue);
     });
 
@@ -26,8 +26,8 @@ void main() {
       await editor.updateSelection(base: 0, extent: 0);
 
       await tester.tapAt(tester.getTopLeft(find.byType(ZefyrHorizontalRule)));
-      LineNode line = editor.document.root.children.last;
-      EmbedNode embed = line.children.single;
+      LineNode line = editor.document.root.children.last as LineNode;
+      EmbedNode embed = line.children.single as EmbedNode;
       expect(editor.selection.isCollapsed, isTrue);
       expect(editor.selection.extentOffset, embed.documentOffset);
     });
@@ -42,8 +42,8 @@ void main() {
       final hr = find.byType(ZefyrHorizontalRule);
       final offset = tester.getBottomRight(hr) - Offset(1.0, 1.0);
       await tester.tapAt(offset);
-      LineNode line = editor.document.root.children.last;
-      EmbedNode embed = line.children.single;
+      LineNode line = editor.document.root.children.last as LineNode;
+      EmbedNode embed = line.children.single as EmbedNode;
       expect(editor.selection.isCollapsed, isTrue);
       expect(editor.selection.extentOffset, embed.documentOffset + 1);
     });
@@ -56,8 +56,8 @@ void main() {
 
       final hr = find.byType(ZefyrHorizontalRule);
       await tester.longPress(hr);
-      LineNode line = editor.document.root.children.last;
-      EmbedNode embed = line.children.single;
+      LineNode line = editor.document.root.children.last as LineNode;
+      EmbedNode embed = line.children.single as EmbedNode;
       expect(editor.selection.baseOffset, embed.documentOffset);
       expect(editor.selection.extentOffset, embed.documentOffset + 1);
     });

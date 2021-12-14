@@ -17,9 +17,9 @@ import 'toolbar.dart';
 /// Widget for editing Zefyr documents.
 class ZefyrEditor extends StatefulWidget {
   const ZefyrEditor({
-    Key key,
-    @required this.controller,
-    @required this.focusNode,
+    Key? key,
+    required this.controller,
+    required this.focusNode,
     this.expandable = false,
     this.autofocus = true,
     this.mode = ZefyrMode.edit,
@@ -55,20 +55,20 @@ class ZefyrEditor extends StatefulWidget {
   final ZefyrMode mode;
 
   /// Optional delegate for customizing this editor's toolbar.
-  final ZefyrToolbarDelegate toolbarDelegate;
+  final ZefyrToolbarDelegate? toolbarDelegate;
 
   /// Delegate for resolving embedded images.
   ///
   /// This delegate is required if embedding images is allowed.
-  final ZefyrImageDelegate imageDelegate;
+  final ZefyrImageDelegate? imageDelegate;
 
   /// Optional delegate for building the text selection handles and toolbar.
   ///
   /// If not provided then platform-specific implementation is used by default.
-  final TextSelectionControls selectionControls;
+  final TextSelectionControls? selectionControls;
 
   /// Controls physics of scrollable editor.
-  final ScrollPhysics physics;
+  final ScrollPhysics? physics;
 
   /// Padding around editable area.
   final EdgeInsets padding;
@@ -78,30 +78,30 @@ class ZefyrEditor extends StatefulWidget {
   /// This setting is only honored on iOS devices.
   ///
   /// If unset, defaults to the brightness of [ThemeData.primaryColorBrightness].
-  final Brightness keyboardAppearance;
+  final Brightness? keyboardAppearance;
 
   @override
   _ZefyrEditorState createState() => _ZefyrEditorState();
 }
 
 class _ZefyrEditorState extends State<ZefyrEditor> {
-  ZefyrImageDelegate _imageDelegate;
-  ZefyrScope _scope;
-  ZefyrThemeData _themeData;
-  GlobalKey<ZefyrToolbarState> _toolbarKey;
-  ZefyrScaffoldState _scaffold;
+  ZefyrImageDelegate? _imageDelegate;
+  ZefyrScope? _scope;
+  late ZefyrThemeData _themeData;
+  GlobalKey<ZefyrToolbarState>? _toolbarKey;
+  ZefyrScaffoldState? _scaffold;
 
   bool get hasToolbar => _toolbarKey != null;
 
   void showToolbar() {
     assert(_toolbarKey == null);
     _toolbarKey = GlobalKey();
-    _scaffold.showToolbar(buildToolbar);
+    _scaffold!.showToolbar(buildToolbar);
   }
 
   void hideToolbar() {
     if (_toolbarKey == null) return;
-    _scaffold.hideToolbar(buildToolbar);
+    _scaffold!.hideToolbar(buildToolbar);
     _toolbarKey = null;
   }
 
@@ -117,13 +117,13 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
   }
 
   void _handleChange() {
-    if (_scope.focusOwner == FocusOwner.none) {
+    if (_scope!.focusOwner == FocusOwner.none) {
       hideToolbar();
     } else if (!hasToolbar) {
       showToolbar();
     } else {
       // TODO: is there a nicer way to do this?
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         _toolbarKey?.currentState?.markNeedsRebuild();
       });
     }
@@ -138,12 +138,12 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
   @override
   void didUpdateWidget(ZefyrEditor oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _scope.mode = widget.mode;
-    _scope.controller = widget.controller;
-    _scope.focusNode = widget.focusNode;
+    _scope!.mode = widget.mode;
+    _scope!.controller = widget.controller;
+    _scope!.focusNode = widget.focusNode;
     if (widget.imageDelegate != oldWidget.imageDelegate) {
       _imageDelegate = widget.imageDelegate;
-      _scope.imageDelegate = _imageDelegate;
+      _scope!.imageDelegate = _imageDelegate;
     }
   }
 
@@ -164,10 +164,10 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
         focusNode: widget.focusNode,
         focusScope: FocusScope.of(context),
       );
-      _scope.addListener(_handleChange);
+      _scope!.addListener(_handleChange);
     } else {
       final focusScope = FocusScope.of(context);
-      _scope.focusScope = focusScope;
+      _scope!.focusScope = focusScope;
     }
 
     final scaffold = ZefyrScaffold.of(context);
@@ -182,8 +182,8 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
   @override
   void dispose() {
     hideToolbar();
-    _scope.removeListener(_handleChange);
-    _scope.dispose();
+    _scope!.removeListener(_handleChange);
+    _scope!.dispose();
     super.dispose();
   }
 
@@ -194,9 +194,9 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
         widget.keyboardAppearance ?? themeData.primaryColorBrightness;
 
     Widget editable = ZefyrEditableText(
-      controller: _scope.controller,
-      focusNode: _scope.focusNode,
-      imageDelegate: _scope.imageDelegate,
+      controller: _scope!.controller!,
+      focusNode: _scope!.focusNode!,
+      imageDelegate: _scope!.imageDelegate,
       selectionControls: widget.selectionControls,
       autofocus: widget.autofocus,
       expandable: widget.expandable,

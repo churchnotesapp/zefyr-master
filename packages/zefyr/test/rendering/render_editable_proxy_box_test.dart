@@ -17,8 +17,8 @@ void main() {
     doc.insert(0, 'This House Is A Circus');
     final text = TextSpan(text: 'This House Is A Circus');
 
-    ZefyrRenderContext renderContext;
-    RenderEditableProxyBox p;
+    ZefyrRenderContext? renderContext;
+    RenderEditableProxyBox? p;
 
     setUp(() {
       WidgetsFlutterBinding.ensureInitialized();
@@ -42,23 +42,23 @@ void main() {
 
     test('it registers with render context', () {
       var owner = PipelineOwner();
-      expect(renderContext.active, isNot(contains(p)));
-      p.attach(owner);
-      expect(renderContext.dirty, contains(p));
-      p.layout(BoxConstraints());
-      expect(renderContext.active, contains(p));
+      expect(renderContext!.active, isNot(contains(p)));
+      p!.attach(owner);
+      expect(renderContext!.dirty, contains(p));
+      p!.layout(BoxConstraints());
+      expect(renderContext!.active, contains(p));
 
-      p.detach();
-      expect(renderContext.active, isNot(contains(p)));
-      p.attach(owner);
-      expect(renderContext.active, contains(p));
+      p!.detach();
+      expect(renderContext!.active, isNot(contains(p)));
+      p!.attach(owner);
+      expect(renderContext!.active, contains(p));
 
-      p.markNeedsLayout();
-      p.detach();
-      expect(renderContext.active, isNot(contains(p)));
+      p!.markNeedsLayout();
+      p!.detach();
+      expect(renderContext!.active, isNot(contains(p)));
 
-      p.layout(BoxConstraints());
-      expect(renderContext.active, contains(p));
+      p!.layout(BoxConstraints());
+      expect(renderContext!.active, contains(p));
     });
   });
 }

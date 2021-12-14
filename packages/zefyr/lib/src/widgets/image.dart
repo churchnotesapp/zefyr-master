@@ -27,7 +27,7 @@ abstract class ZefyrImageDelegate<S> {
   ///
   /// The [key] argument contains value which was previously returned from
   /// [pickImage] method.
-  Widget buildImage(BuildContext context, String key);
+  Widget? buildImage(BuildContext context, String? key);
 
   /// Picks an image from specified [source].
   ///
@@ -37,33 +37,33 @@ abstract class ZefyrImageDelegate<S> {
   /// Depending on your application returned key may represent a path to
   /// an image file on user's device, an HTTP link, or an identifier generated
   /// by a file hosting service like AWS S3 or Google Drive.
-  Future<String> pickImage(S source);
+  Future<String>? pickImage(S source);
 }
 
 class ZefyrImage extends StatefulWidget {
-  const ZefyrImage({Key key, @required this.node, @required this.delegate})
+  const ZefyrImage({Key? key, required this.node, required this.delegate})
       : super(key: key);
 
   final EmbedNode node;
-  final ZefyrImageDelegate delegate;
+  final ZefyrImageDelegate? delegate;
 
   @override
   _ZefyrImageState createState() => _ZefyrImageState();
 }
 
 class _ZefyrImageState extends State<ZefyrImage> {
-  String get imageSource {
-    EmbedAttribute attribute = widget.node.style.get(NotusAttribute.embed);
-    return attribute.value['source'] as String;
+  String? get imageSource {
+    EmbedAttribute attribute = widget.node.style.get(NotusAttribute.embed) as EmbedAttribute;
+    return attribute.value!['source'] as String?;
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = ZefyrTheme.of(context);
-    final image = widget.delegate.buildImage(context, imageSource);
+    final theme = ZefyrTheme.of(context)!;
+    final image = widget.delegate!.buildImage(context, imageSource);
     return _EditableImage(
       child: Padding(
-        padding: theme.defaultLineTheme.padding,
+        padding: theme.defaultLineTheme!.padding,
         child: image,
       ),
       node: widget.node,
@@ -72,7 +72,7 @@ class _ZefyrImageState extends State<ZefyrImage> {
 }
 
 class _EditableImage extends SingleChildRenderObjectWidget {
-  _EditableImage({@required Widget child, @required this.node})
+  _EditableImage({required Widget child, required this.node})
       : assert(node != null),
         super(child: child);
 
@@ -94,8 +94,8 @@ class RenderEditableImage extends RenderBox
     with RenderObjectWithChildMixin<RenderBox>, RenderProxyBoxMixin<RenderBox>
     implements RenderEditableBox {
   RenderEditableImage({
-    RenderImage child,
-    @required EmbedNode node,
+    RenderImage? child,
+    required EmbedNode node,
   }) : node = node {
     this.child = child;
   }
@@ -111,7 +111,7 @@ class RenderEditableImage extends RenderBox
   SelectionOrder get selectionOrder => SelectionOrder.foreground;
 
   @override
-  TextSelection getLocalSelection(TextSelection documentSelection) {
+  TextSelection? getLocalSelection(TextSelection documentSelection) {
     if (!intersectsWithSelection(documentSelection)) return null;
 
     final nodeBase = node.documentOffset;
@@ -120,8 +120,8 @@ class RenderEditableImage extends RenderBox
   }
 
   @override
-  List<ui.TextBox> getEndpointsForSelection(TextSelection selection) {
-    final local = getLocalSelection(selection);
+  List<ui.TextBox> getEndpointsForSelection(TextSelection? selection) {
+    final local = getLocalSelection(selection!)!;
     if (local.isCollapsed) {
       final dx = local.extentOffset == 0 ? _childOffset.dx : size.width;
       return [
@@ -162,7 +162,7 @@ class RenderEditableImage extends RenderBox
   }
 
   @override
-  Offset getOffsetForCaret(TextPosition position, Rect caretPrototype) {
+  Offset getOffsetForCaret(TextPosition position, Rect? caretPrototype) {
     final pos = position.offset - node.documentOffset;
     var caretOffset = _childOffset - Offset(kHorizontalPadding, 0.0);
     if (pos == 1) {
@@ -174,8 +174,8 @@ class RenderEditableImage extends RenderBox
 
   @override
   void paintSelection(PaintingContext context, Offset offset,
-      TextSelection selection, Color selectionColor) {
-    final localSelection = getLocalSelection(selection);
+      TextSelection? selection, Color selectionColor) {
+    final localSelection = getLocalSelection(selection!)!;
     assert(localSelection != null);
     if (!localSelection.isCollapsed) {
       final paint = Paint()
@@ -195,7 +195,7 @@ class RenderEditableImage extends RenderBox
 
   static const double kHorizontalPadding = 1.0;
 
-  Size _lastChildSize;
+  late Size _lastChildSize;
 
   Offset get _childOffset {
     final dx = (size.width - _lastChildSize.width) / 2 + kHorizontalPadding;
@@ -220,8 +220,8 @@ class RenderEditableImage extends RenderBox
         minHeight: 0.0,
         maxHeight: (width * 9 / 16).floorToDouble(),
       );
-      child.layout(childConstraints, parentUsesSize: true);
-      _lastChildSize = child.size;
+      child!.layout(childConstraints, parentUsesSize: true);
+      _lastChildSize = child!.size;
       size = Size(constraints.maxWidth, _lastChildSize.height);
     } else {
       performResize();

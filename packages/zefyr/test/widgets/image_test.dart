@@ -19,9 +19,9 @@ void main() {
       await editor.pumpAndTap();
       await editor.tapButtonWithIcon(Icons.photo);
       await editor.tapButtonWithIcon(Icons.photo_camera);
-      LineNode line = editor.document.root.children.last;
+      LineNode line = editor.document.root.children.last as LineNode;
       expect(line.hasEmbed, isTrue);
-      EmbedNode embed = line.children.single;
+      EmbedNode embed = line.children.single as EmbedNode;
       expect(embed.style.value(NotusAttribute.embed), <String, dynamic>{
         'type': 'image',
         'source': 'file:///tmp/test.jpg',
@@ -41,8 +41,8 @@ void main() {
       await editor.updateSelection(base: 0, extent: 0);
 
       await tester.tapAt(tester.getTopLeft(find.byType(ZefyrImage)));
-      LineNode line = editor.document.root.children.last;
-      EmbedNode embed = line.children.single;
+      LineNode line = editor.document.root.children.last as LineNode;
+      EmbedNode embed = line.children.single as EmbedNode;
       expect(editor.selection.isCollapsed, isTrue);
       expect(editor.selection.extentOffset, embed.documentOffset);
     });
@@ -60,8 +60,8 @@ void main() {
       final img = find.byType(ZefyrImage);
       final offset = tester.getBottomRight(img) - Offset(1.0, 1.0);
       await tester.tapAt(offset);
-      LineNode line = editor.document.root.children.last;
-      EmbedNode embed = line.children.single;
+      LineNode line = editor.document.root.children.last as LineNode;
+      EmbedNode embed = line.children.single as EmbedNode;
       expect(editor.selection.isCollapsed, isTrue);
       expect(editor.selection.extentOffset, embed.documentOffset + 1);
     });
@@ -78,8 +78,8 @@ void main() {
 
       final img = find.byType(ZefyrImage);
       await tester.longPress(img);
-      LineNode line = editor.document.root.children.last;
-      EmbedNode embed = line.children.single;
+      LineNode line = editor.document.root.children.last as LineNode;
+      EmbedNode embed = line.children.single as EmbedNode;
       expect(editor.selection.baseOffset, embed.documentOffset);
       expect(editor.selection.extentOffset, embed.documentOffset + 1);
       final state = tester.state(find.byType(ZefyrSelectionOverlay))
@@ -91,8 +91,8 @@ void main() {
 
 class _TestImageDelegate implements ZefyrImageDelegate<String> {
   @override
-  Widget buildImage(BuildContext context, String key) {
-    return Image.file(File(key));
+  Widget buildImage(BuildContext context, String? key) {
+    return Image.file(File(key!));
   }
 
   @override

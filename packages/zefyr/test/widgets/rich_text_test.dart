@@ -14,7 +14,7 @@ void main() {
     doc.insert(0, 'This House Is A Circus');
     final text = TextSpan(text: 'This House Is A Circus');
 
-    Widget widget;
+    late Widget widget;
     setUp(() {
       widget = Directionality(
         textDirection: TextDirection.ltr,

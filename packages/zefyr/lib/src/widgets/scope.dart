@@ -25,7 +25,7 @@ class ZefyrScope extends ChangeNotifier {
   /// Creates a view-only scope.
   ///
   /// Normally used in [ZefyrView].
-  ZefyrScope.view({ZefyrImageDelegate imageDelegate})
+  ZefyrScope.view({ZefyrImageDelegate? imageDelegate})
       : isEditable = false,
         _mode = ZefyrMode.view,
         _imageDelegate = imageDelegate;
@@ -34,11 +34,11 @@ class ZefyrScope extends ChangeNotifier {
   ///
   /// Normally used in [ZefyrEditor].
   ZefyrScope.editable({
-    @required ZefyrMode mode,
-    @required ZefyrController controller,
-    @required FocusNode focusNode,
-    @required FocusScopeNode focusScope,
-    ZefyrImageDelegate imageDelegate,
+    required ZefyrMode mode,
+    required ZefyrController controller,
+    required FocusNode focusNode,
+    required FocusScopeNode focusScope,
+    ZefyrImageDelegate? imageDelegate,
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
@@ -51,21 +51,21 @@ class ZefyrScope extends ChangeNotifier {
         _focusScope = focusScope,
         _cursorTimer = CursorTimer(),
         _renderContext = ZefyrRenderContext() {
-    _selectionStyle = _controller.getSelectionStyle();
-    _selection = _controller.selection;
-    _controller.addListener(_handleControllerChange);
-    _focusNode.addListener(_handleFocusChange);
+    _selectionStyle = _controller!.getSelectionStyle();
+    _selection = _controller!.selection;
+    _controller!.addListener(_handleControllerChange);
+    _focusNode!.addListener(_handleFocusChange);
   }
 
-  static ZefyrScope of(BuildContext context) {
+  static ZefyrScope? of(BuildContext context) {
     final widget =
-        context.dependOnInheritedWidgetOfExactType<ZefyrScopeAccess>();
+        context.dependOnInheritedWidgetOfExactType<ZefyrScopeAccess>()!;
     return widget.scope;
   }
 
-  ZefyrImageDelegate _imageDelegate;
-  ZefyrImageDelegate get imageDelegate => _imageDelegate;
-  set imageDelegate(ZefyrImageDelegate value) {
+  ZefyrImageDelegate? _imageDelegate;
+  ZefyrImageDelegate? get imageDelegate => _imageDelegate;
+  set imageDelegate(ZefyrImageDelegate? value) {
     if (_imageDelegate != value) {
       _imageDelegate = value;
       notifyListeners();
@@ -82,55 +82,55 @@ class ZefyrScope extends ChangeNotifier {
     }
   }
 
-  ZefyrController _controller;
-  ZefyrController get controller => _controller;
-  set controller(ZefyrController value) {
+  ZefyrController? _controller;
+  ZefyrController? get controller => _controller;
+  set controller(ZefyrController? value) {
     assert(isEditable && value != null);
     if (_controller != value) {
-      _controller.removeListener(_handleControllerChange);
+      _controller!.removeListener(_handleControllerChange);
       _controller = value;
-      _selectionStyle = _controller.getSelectionStyle();
-      _selection = _controller.selection;
-      _controller.addListener(_handleControllerChange);
+      _selectionStyle = _controller!.getSelectionStyle();
+      _selection = _controller!.selection;
+      _controller!.addListener(_handleControllerChange);
       notifyListeners();
     }
   }
 
-  FocusNode _focusNode;
-  FocusNode get focusNode => _focusNode;
-  set focusNode(FocusNode value) {
+  FocusNode? _focusNode;
+  FocusNode? get focusNode => _focusNode;
+  set focusNode(FocusNode? value) {
     assert(isEditable && value != null);
     if (_focusNode != value) {
-      _focusNode.removeListener(_handleFocusChange);
+      _focusNode!.removeListener(_handleFocusChange);
       _focusNode = value;
-      _focusNode.addListener(_handleFocusChange);
+      _focusNode!.addListener(_handleFocusChange);
       notifyListeners();
     }
   }
 
-  FocusScopeNode _focusScope;
-  FocusScopeNode get focusScope => _focusScope;
-  set focusScope(FocusScopeNode value) {
+  FocusScopeNode? _focusScope;
+  FocusScopeNode? get focusScope => _focusScope;
+  set focusScope(FocusScopeNode? value) {
     assert(isEditable && value != null);
     if (_focusScope != value) {
       _focusScope = value;
     }
   }
 
-  CursorTimer _cursorTimer;
-  CursorTimer get cursorTimer => _cursorTimer;
-  ValueNotifier<bool> get showCursor => cursorTimer.value;
+  CursorTimer? _cursorTimer;
+  CursorTimer? get cursorTimer => _cursorTimer;
+  ValueNotifier<bool> get showCursor => cursorTimer!.value;
 
-  ZefyrRenderContext _renderContext;
-  ZefyrRenderContext get renderContext => _renderContext;
+  ZefyrRenderContext? _renderContext;
+  ZefyrRenderContext? get renderContext => _renderContext;
 
-  NotusStyle get selectionStyle => _selectionStyle;
-  NotusStyle _selectionStyle;
-  TextSelection get selection => _selection;
-  TextSelection _selection;
+  NotusStyle? get selectionStyle => _selectionStyle;
+  NotusStyle? _selectionStyle;
+  TextSelection? get selection => _selection;
+  TextSelection? _selection;
 
   bool _disposed = false;
-  FocusNode _toolbarFocusNode;
+  FocusNode? _toolbarFocusNode;
 
   /// Whether this scope is backed by editable Zefyr widgets or read-only view.
   ///
@@ -144,7 +144,7 @@ class ZefyrScope extends ChangeNotifier {
   /// objects which are not dependent on editing flow, e.g. [imageDelegate].
   final bool isEditable;
 
-  set toolbarFocusNode(FocusNode node) {
+  set toolbarFocusNode(FocusNode? node) {
     assert(isEditable);
     assert(!_disposed || node == null);
     if (_toolbarFocusNode != node) {
@@ -159,7 +159,7 @@ class ZefyrScope extends ChangeNotifier {
   FocusOwner get focusOwner {
     assert(isEditable);
     assert(!_disposed);
-    if (_focusNode.hasFocus) {
+    if (_focusNode!.hasFocus) {
       return FocusOwner.editor;
     } else if (_toolbarFocusNode?.hasFocus == true) {
       return FocusOwner.toolbar;
@@ -172,25 +172,25 @@ class ZefyrScope extends ChangeNotifier {
       {ChangeSource source = ChangeSource.remote}) {
     assert(isEditable);
     assert(!_disposed);
-    _controller.updateSelection(value, source: source);
+    _controller!.updateSelection(value, source: source);
   }
 
   void formatSelection(NotusAttribute value) {
     assert(isEditable);
     assert(!_disposed);
-    _controller.formatSelection(value);
+    _controller!.formatSelection(value);
   }
 
   void focus() {
     assert(isEditable);
     assert(!_disposed);
-    _focusScope.requestFocus(_focusNode);
+    _focusScope!.requestFocus(_focusNode);
   }
 
   void hideKeyboard() {
     assert(isEditable);
     assert(!_disposed);
-    _focusNode.unfocus();
+    _focusNode!.unfocus();
   }
 
   @override
@@ -204,8 +204,8 @@ class ZefyrScope extends ChangeNotifier {
 
   void _handleControllerChange() {
     assert(!_disposed);
-    final attrs = _controller.getSelectionStyle();
-    final selection = _controller.selection;
+    final attrs = _controller!.getSelectionStyle();
+    final selection = _controller!.selection;
     if (_selectionStyle != attrs || _selection != selection) {
       _selectionStyle = attrs;
       _selection = selection;
@@ -215,11 +215,11 @@ class ZefyrScope extends ChangeNotifier {
 
   void _handleFocusChange() {
     assert(!_disposed);
-    if (focusOwner == FocusOwner.none && !_selection.isCollapsed) {
+    if (focusOwner == FocusOwner.none && !_selection!.isCollapsed) {
       // Collapse selection if there is nothing focused.
-      _controller.updateSelection(_selection.copyWith(
-        baseOffset: _selection.extentOffset,
-        extentOffset: _selection.extentOffset,
+      _controller!.updateSelection(_selection!.copyWith(
+        baseOffset: _selection!.extentOffset,
+        extentOffset: _selection!.extentOffset,
       ));
     }
     notifyListeners();
@@ -232,9 +232,9 @@ class ZefyrScope extends ChangeNotifier {
 }
 
 class ZefyrScopeAccess extends InheritedWidget {
-  final ZefyrScope scope;
+  final ZefyrScope? scope;
 
-  ZefyrScopeAccess({Key key, @required this.scope, @required Widget child})
+  ZefyrScopeAccess({Key? key, required this.scope, required Widget child})
       : super(key: key, child: child);
 
   @override

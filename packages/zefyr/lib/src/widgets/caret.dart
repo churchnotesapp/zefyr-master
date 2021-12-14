@@ -19,9 +19,9 @@ class CursorPainter {
       : assert(color != null),
         _color = color;
 
-  Rect _prototype;
+  Rect? _prototype;
 
-  Rect get prototype => _prototype;
+  Rect? get prototype => _prototype;
 
   Color _color;
   Color get color => _color;
@@ -36,7 +36,7 @@ class CursorPainter {
 
   void paint(Canvas canvas, Offset offset) {
     final paint = Paint()..color = _color;
-    final caretRect = _prototype.shift(offset);
+    final caretRect = _prototype!.shift(offset);
     canvas.drawRect(caretRect, paint);
   }
 }

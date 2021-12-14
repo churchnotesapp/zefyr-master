@@ -9,21 +9,21 @@ import 'theme.dart';
 
 /// Represents a quote block in a Zefyr editor.
 class ZefyrQuote extends StatelessWidget {
-  const ZefyrQuote({Key key, @required this.node}) : super(key: key);
+  const ZefyrQuote({Key? key, required this.node}) : super(key: key);
 
   final BlockNode node;
 
   @override
   Widget build(BuildContext context) {
-    final theme = ZefyrTheme.of(context);
-    final style = theme.attributeTheme.quote.textStyle;
+    final theme = ZefyrTheme.of(context)!;
+    final style = theme.attributeTheme!.quote!.textStyle;
     final items = <Widget>[];
     for (var line in node.children) {
-      items.add(_buildLine(line, style, theme.indentWidth));
+      items.add(_buildLine(line, style, theme.indentWidth!));
     }
 
     return Padding(
-      padding: theme.attributeTheme.quote.padding,
+      padding: theme.attributeTheme!.quote!.padding!,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: items,
@@ -31,8 +31,8 @@ class ZefyrQuote extends StatelessWidget {
     );
   }
 
-  Widget _buildLine(Node node, TextStyle blockStyle, double indentSize) {
-    LineNode line = node;
+  Widget _buildLine(Node node, TextStyle? blockStyle, double indentSize) {
+    LineNode line = node as LineNode;
 
     Widget content;
     if (line.style.contains(NotusAttribute.heading)) {

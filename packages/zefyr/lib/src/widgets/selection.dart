@@ -16,7 +16,7 @@ import 'controller.dart';
 import 'editable_box.dart';
 import 'scope.dart';
 
-RenderEditableBox _getEditableBox(HitTestResult result) {
+RenderEditableBox? _getEditableBox(HitTestResult result) {
   for (var entry in result.path) {
     if (entry.target is RenderEditableBox) {
       return entry.target as RenderEditableBox;
@@ -27,7 +27,7 @@ RenderEditableBox _getEditableBox(HitTestResult result) {
 
 /// Selection overlay controls selection handles and other gestures.
 class ZefyrSelectionOverlay extends StatefulWidget {
-  const ZefyrSelectionOverlay({Key key, @required this.controls})
+  const ZefyrSelectionOverlay({Key? key, required this.controls})
       : super(key: key);
 
   final TextSelectionControls controls;
@@ -38,44 +38,44 @@ class ZefyrSelectionOverlay extends StatefulWidget {
 
 class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
     implements TextSelectionDelegate {
-  TextSelectionControls _controls;
+  TextSelectionControls? _controls;
 
-  TextSelectionControls get controls => _controls;
+  TextSelectionControls? get controls => _controls;
 
-  final ClipboardStatusNotifier _clipboardStatus =
+  final ClipboardStatusNotifier? _clipboardStatus =
       kIsWeb ? null : ClipboardStatusNotifier();
 
   /// Global position of last TapDown event.
-  Offset _lastTapDownPosition;
+  Offset? _lastTapDownPosition;
 
   /// Global position of last TapDown which is potentially a long press.
-  Offset _longPressPosition;
+  Offset? _longPressPosition;
 
-  OverlayState _overlay;
-  OverlayEntry _toolbar;
-  AnimationController _toolbarController;
+  OverlayState? _overlay;
+  OverlayEntry? _toolbar;
+  AnimationController? _toolbarController;
 
-  ZefyrScope _scope;
+  ZefyrScope? _scope;
 
-  ZefyrScope get scope => _scope;
-  TextSelection _selection;
-  FocusOwner _focusOwner;
+  ZefyrScope? get scope => _scope;
+  TextSelection? _selection;
+  FocusOwner? _focusOwner;
 
   bool _didCaretTap = false;
 
   /// Whether selection controls should be hidden.
   bool get shouldHideControls {
-    if (!_scope.mode.canSelect) return true;
-    final selection = _scope.selection;
+    if (!_scope!.mode.canSelect) return true;
+    final selection = _scope!.selection;
     final isSelectionCollapsed = selection == null || selection.isCollapsed;
-    if (_scope.mode.canEdit) {
-      return isSelectionCollapsed || _scope.focusOwner != FocusOwner.editor;
+    if (_scope!.mode.canEdit) {
+      return isSelectionCollapsed || _scope!.focusOwner != FocusOwner.editor;
     }
     return isSelectionCollapsed;
   }
 
   void showToolbar() {
-    final toolbarOpacity = _toolbarController.view;
+    final toolbarOpacity = _toolbarController!.view;
     _toolbar = OverlayEntry(
       builder: (context) => FadeTransition(
         opacity: toolbarOpacity,
@@ -85,8 +85,8 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
         ),
       ),
     );
-    _overlay.insert(_toolbar);
-    _toolbarController.forward(from: 0.0);
+    _overlay!.insert(_toolbar!);
+    _toolbarController!.forward(from: 0.0);
   }
 
   bool get isToolbarVisible => _toolbar != null;
@@ -95,15 +95,15 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
 
   @override
   TextEditingValue get textEditingValue =>
-      _scope.controller.plainTextEditingValue;
+      _scope!.controller!.plainTextEditingValue;
 
   @override
   set textEditingValue(TextEditingValue value) {
     final cursorPosition = value.selection.extentOffset;
-    final oldText = _scope.controller.document.toPlainText();
+    final oldText = _scope!.controller!.document.toPlainText();
     final newText = value.text;
     final diff = fastDiff(oldText, newText, cursorPosition);
-    _scope.controller.replaceText(
+    _scope!.controller!.replaceText(
         diff.start, diff.deleted.length, diff.inserted,
         selection: value.selection);
   }
@@ -146,9 +146,9 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
     if (_scope != scope) {
       _scope?.removeListener(_handleChange);
       _scope = scope;
-      _scope.addListener(_handleChange);
-      _selection = _scope.selection;
-      _focusOwner = _scope.focusOwner;
+      _scope!.addListener(_handleChange);
+      _selection = _scope!.selection;
+      _focusOwner = _scope!.focusOwner;
     }
 
     final overlay = Overlay.of(context, debugRequiredFor: widget);
@@ -160,7 +160,7 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
     }
     _toolbarController ??= AnimationController(
       duration: _kFadeDuration,
-      vsync: _overlay,
+      vsync: _overlay!,
     );
 
     _toolbar?.markNeedsBuild();
@@ -168,9 +168,9 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
 
   @override
   void dispose() {
-    _scope.removeListener(_handleChange);
+    _scope!.removeListener(_handleChange);
     hideToolbar();
-    _toolbarController.dispose();
+    _toolbarController!.dispose();
     _toolbarController = null;
     _clipboardStatus?.removeListener(_onChangedClipboardStatus);
     _clipboardStatus?.dispose();
@@ -213,7 +213,7 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
   }
 
   void _handleChange() {
-    if (_selection != _scope.selection || _focusOwner != _scope.focusOwner) {
+    if (_selection != _scope!.selection || _focusOwner != _scope!.focusOwner) {
       _updateToolbar();
     }
   }
@@ -223,20 +223,20 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
       return;
     }
 
-    final selection = _scope.selection;
-    final focusOwner = _scope.focusOwner;
+    final selection = _scope!.selection;
+    final focusOwner = _scope!.focusOwner;
     setState(() {
       if (shouldHideControls && isToolbarVisible) {
         hideToolbar();
       } else {
         if (_selection != selection) {
-          if (selection.isCollapsed && isToolbarVisible) {
+          if (selection!.isCollapsed && isToolbarVisible) {
             hideToolbar();
           }
           _toolbar?.markNeedsBuild();
           if (!selection.isCollapsed && isToolbarHidden) showToolbar();
         } else {
-          if (!selection.isCollapsed && isToolbarHidden) {
+          if (!selection!.isCollapsed && isToolbarHidden) {
             showToolbar();
           } else if (isToolbarVisible) {
             _toolbar?.markNeedsBuild();
@@ -260,13 +260,13 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
 
   void _handleTap() {
     assert(_lastTapDownPosition != null);
-    final globalPoint = _lastTapDownPosition;
+    final globalPoint = _lastTapDownPosition!;
     _lastTapDownPosition = null;
     final result = HitTestResult();
-    WidgetsBinding.instance.hitTest(result, globalPoint);
+    WidgetsBinding.instance!.hitTest(result, globalPoint);
 
-    RenderEditableProxyBox box = _getEditableBox(result);
-    box ??= _scope.renderContext.closestBoxForGlobalPoint(globalPoint);
+    RenderEditableProxyBox? box = _getEditableBox(result) as RenderEditableProxyBox?;
+    box ??= _scope!.renderContext!.closestBoxForGlobalPoint(globalPoint);
     if (box == null) return null;
 
     final localPoint = box.globalToLocal(globalPoint);
@@ -285,14 +285,14 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
     } else {
       _didCaretTap = true;
     }
-    _scope.controller.updateSelection(selection, source: ChangeSource.local);
+    _scope!.controller!.updateSelection(selection, source: ChangeSource.local);
   }
 
   void _handleLongPress() {
-    final globalPoint = _longPressPosition;
+    final globalPoint = _longPressPosition!;
     _longPressPosition = null;
     final result = HitTestResult();
-    WidgetsBinding.instance.hitTest(result, globalPoint);
+    WidgetsBinding.instance!.hitTest(result, globalPoint);
     final box = _getEditableBox(result);
     if (box == null) {
       return;
@@ -304,20 +304,20 @@ class ZefyrSelectionOverlayState extends State<ZefyrSelectionOverlay>
       baseOffset: word.start,
       extentOffset: word.end,
     );
-    _scope.controller.updateSelection(selection, source: ChangeSource.local);
+    _scope!.controller!.updateSelection(selection, source: ChangeSource.local);
   }
 
   @override
-  bool get copyEnabled => _scope.mode.canSelect && !_selection.isCollapsed;
+  bool get copyEnabled => _scope!.mode.canSelect && !_selection!.isCollapsed;
 
   @override
-  bool get cutEnabled => _scope.mode.canEdit && !_selection.isCollapsed;
+  bool get cutEnabled => _scope!.mode.canEdit && !_selection!.isCollapsed;
 
   @override
-  bool get pasteEnabled => _scope.mode.canEdit;
+  bool get pasteEnabled => _scope!.mode.canEdit;
 
   @override
-  bool get selectAllEnabled => _scope.mode.canSelect;
+  bool get selectAllEnabled => _scope!.mode.canSelect;
 
   @override
   void copySelection(SelectionChangedCause cause) {
@@ -351,9 +351,9 @@ enum _SelectionHandlePosition { base, extent }
 
 class SelectionHandleDriver extends StatefulWidget {
   const SelectionHandleDriver({
-    Key key,
-    @required this.position,
-    @required this.selectionOverlay,
+    Key? key,
+    required this.position,
+    required this.selectionOverlay,
   })  : assert(selectionOverlay != null),
         super(key: key);
 
@@ -366,11 +366,11 @@ class SelectionHandleDriver extends StatefulWidget {
 
 class _SelectionHandleDriverState extends State<SelectionHandleDriver>
     with SingleTickerProviderStateMixin {
-  ZefyrScope _scope;
+  ZefyrScope? _scope;
 
   /// Current document selection.
-  TextSelection get selection => _selection;
-  TextSelection _selection;
+  TextSelection? get selection => _selection;
+  TextSelection? _selection;
 
   /// Returns `true` if this handle is located at the baseOffset of selection.
   bool get isBaseHandle => widget.position == _SelectionHandlePosition.base;
@@ -380,9 +380,9 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
   /// For base handle this equals to [TextSelection.baseOffset] and for
   /// extent handle - [TextSelection.extentOffset].
   int get documentOffset =>
-      isBaseHandle ? selection.baseOffset : selection.extentOffset;
+      isBaseHandle ? selection!.baseOffset : selection!.extentOffset;
 
-  List<TextSelectionPoint> getEndpointsForSelection(RenderEditableBox block) {
+  List<TextSelectionPoint>? getEndpointsForSelection(RenderEditableBox block) {
     if (block == null) return null;
 
     final paintOffset = Offset.zero;
@@ -403,9 +403,9 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
     if (_scope != scope) {
       _scope?.removeListener(_handleScopeChange);
       _scope = scope;
-      _scope.addListener(_handleScopeChange);
+      _scope!.addListener(_handleScopeChange);
     }
-    _selection = _scope.selection;
+    _selection = _scope!.selection;
   }
 
   @override
@@ -423,7 +423,7 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
     if (widget.selectionOverlay.shouldHideControls) {
       return Container();
     }
-    final block = _scope.renderContext.boxForTextOffset(documentOffset);
+    final block = _scope!.renderContext!.boxForTextOffset(documentOffset);
     if (block == null) {
       // TODO: For some reason sometimes we get updates when render boxes
       //      are in process of rebuilding so we don't have access to them here.
@@ -437,12 +437,12 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
     final endpoints = getEndpointsForSelection(block);
     if (endpoints == null || endpoints.isEmpty) return Container();
 
-    Offset point;
-    TextSelectionHandleType type;
+    late Offset point;
+    TextSelectionHandleType? type;
 
     // we invert base / extend if the selection is from bottom to top
     var pos = widget.position;
-    if (selection.baseOffset > selection.extentOffset) {
+    if (selection!.baseOffset > selection!.extentOffset) {
       pos = pos == _SelectionHandlePosition.base
           ? _SelectionHandlePosition.extent
           : _SelectionHandlePosition.base;
@@ -470,11 +470,11 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
       point.dy.clamp(0.0, viewport.height),
     );
 
-    final handleAnchor = widget.selectionOverlay.controls.getHandleAnchor(
-      type,
+    final handleAnchor = widget.selectionOverlay.controls!.getHandleAnchor(
+      type!,
       block.preferredLineHeight,
     );
-    final handleSize = widget.selectionOverlay.controls.getHandleSize(
+    final handleSize = widget.selectionOverlay.controls!.getHandleSize(
       block.preferredLineHeight,
     );
     final handleRect = Rect.fromLTWH(
@@ -517,7 +517,7 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
               right: padding.right,
               bottom: padding.bottom,
             ),
-            child: widget.selectionOverlay.controls.buildHandle(
+            child: widget.selectionOverlay.controls!.buildHandle(
               context,
               type,
               block.preferredLineHeight,
@@ -532,12 +532,12 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
   // Private members
   //
 
-  TextSelectionHandleType _chooseType(
+  TextSelectionHandleType? _chooseType(
     TextSelectionPoint endpoint,
     TextSelectionHandleType ltrType,
     TextSelectionHandleType rtlType,
   ) {
-    if (selection.isCollapsed) return TextSelectionHandleType.collapsed;
+    if (selection!.isCollapsed) return TextSelectionHandleType.collapsed;
 
     assert(endpoint.direction != null);
     switch (endpoint.direction) {
@@ -549,36 +549,36 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
     return null;
   }
 
-  Offset _dragPosition;
-  RenderEditableBox _dragCurrentParagraph;
+  Offset? _dragPosition;
+  RenderEditableBox? _dragCurrentParagraph;
 
   void _handleScopeChange() {
-    if (_selection != _scope.selection) {
+    if (_selection != _scope!.selection) {
       setState(() {
-        _selection = _scope.selection;
+        _selection = _scope!.selection;
       });
     }
   }
 
   void _handleDragStart(DragStartDetails details) {
     _dragCurrentParagraph =
-        _scope.renderContext.boxForTextOffset(documentOffset);
+        _scope!.renderContext!.boxForTextOffset(documentOffset);
     _dragPosition = Platform.isAndroid
         ? details.globalPosition -
             Offset(
                 0,
-                widget.selectionOverlay.controls
-                    .getHandleSize(_dragCurrentParagraph.preferredLineHeight)
+                widget.selectionOverlay.controls!
+                    .getHandleSize(_dragCurrentParagraph!.preferredLineHeight)
                     .height)
         : details.globalPosition;
   }
 
   void _handleDragUpdate(DragUpdateDetails details) {
     final localPoint = _getLocalPointFromDragDetails(details);
-    final position = _dragCurrentParagraph.getPositionForOffset(localPoint);
-    final newSelection = selection.copyWith(
-      baseOffset: isBaseHandle ? position.offset : selection.baseOffset,
-      extentOffset: isBaseHandle ? selection.extentOffset : position.offset,
+    final position = _dragCurrentParagraph!.getPositionForOffset(localPoint);
+    final newSelection = selection!.copyWith(
+      baseOffset: isBaseHandle ? position.offset : selection!.baseOffset,
+      extentOffset: isBaseHandle ? selection!.extentOffset : position.offset,
     );
 
     if (newSelection.baseOffset >= newSelection.extentOffset) {
@@ -587,53 +587,53 @@ class _SelectionHandleDriverState extends State<SelectionHandleDriver>
     }
 
     if (newSelection != _selection) {
-      _scope.updateSelection(newSelection, source: ChangeSource.local);
+      _scope!.updateSelection(newSelection, source: ChangeSource.local);
     }
   }
 
   Offset _getLocalPointFromDragDetails(DragUpdateDetails details) {
     // Keep track of the handle size adjusted position (Android only)
     _dragPosition += details.delta;
-    RenderEditableBox paragraph =
-        _scope.renderContext.boxForGlobalPoint(_dragPosition);
+    RenderEditableBox? paragraph =
+        _scope!.renderContext!.boxForGlobalPoint(_dragPosition);
     // When dragging outside a paragraph, user expects dragging to
     // capture horizontal component of movement
     if (paragraph == null) {
       paragraph = _dragCurrentParagraph;
-      var effectiveGlobalPoint = paragraph.localToGlobal(Offset.zero);
-      if (_dragPosition.dy > paragraph.localToGlobal(Offset.zero).dy) {
+      var effectiveGlobalPoint = paragraph!.localToGlobal(Offset.zero);
+      if (_dragPosition!.dy > paragraph.localToGlobal(Offset.zero).dy) {
         effectiveGlobalPoint = Offset(
-            _dragPosition.dx, effectiveGlobalPoint.dy + paragraph.size.height);
+            _dragPosition!.dx, effectiveGlobalPoint.dy + paragraph.size.height);
       }
-      if (_dragPosition.dy < paragraph.localToGlobal(Offset.zero).dy) {
+      if (_dragPosition!.dy < paragraph.localToGlobal(Offset.zero).dy) {
         effectiveGlobalPoint =
-            Offset(_dragPosition.dx, effectiveGlobalPoint.dy);
+            Offset(_dragPosition!.dx, effectiveGlobalPoint.dy);
       }
       return paragraph.globalToLocal(effectiveGlobalPoint);
     }
     _dragCurrentParagraph = paragraph;
-    return paragraph.globalToLocal(_dragPosition);
+    return paragraph.globalToLocal(_dragPosition!);
   }
 }
 
 class _SelectionToolbar extends StatefulWidget {
   const _SelectionToolbar({
-    Key key,
-    @required this.selectionOverlay,
-    @required this.clipboardStatus,
+    Key? key,
+    required this.selectionOverlay,
+    required this.clipboardStatus,
   }) : super(key: key);
 
   final ZefyrSelectionOverlayState selectionOverlay;
-  final ClipboardStatusNotifier clipboardStatus;
+  final ClipboardStatusNotifier? clipboardStatus;
 
   @override
   _SelectionToolbarState createState() => _SelectionToolbarState();
 }
 
 class _SelectionToolbarState extends State<_SelectionToolbar> {
-  TextSelectionControls get controls => widget.selectionOverlay.controls;
+  TextSelectionControls? get controls => widget.selectionOverlay.controls;
 
-  ZefyrScope get scope => widget.selectionOverlay.scope;
+  ZefyrScope? get scope => widget.selectionOverlay.scope;
 
   TextSelection get selection =>
       widget.selectionOverlay.textEditingValue.selection;
@@ -645,7 +645,7 @@ class _SelectionToolbarState extends State<_SelectionToolbar> {
 
   Widget _buildToolbar(BuildContext context) {
     final base = selection.baseOffset;
-    final block = scope.renderContext.boxForTextOffset(base);
+    final block = scope!.renderContext!.boxForTextOffset(base);
     if (block == null) {
       return Container();
     }
@@ -683,14 +683,14 @@ class _SelectionToolbarState extends State<_SelectionToolbar> {
       block.localToGlobal(block.size.bottomRight(Offset.zero)),
     );
 
-    final toolbar = controls.buildToolbar(
+    final toolbar = controls!.buildToolbar(
       context,
       editingRegion,
       block.preferredLineHeight,
       midpoint,
       endpoints,
       widget.selectionOverlay,
-      widget.clipboardStatus,
+      widget.clipboardStatus!,
       null
     );
     return CompositedTransformFollower(

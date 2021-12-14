@@ -17,12 +17,12 @@ class EditorSandBox {
   final Widget widget;
 
   factory EditorSandBox({
-    @required WidgetTester tester,
-    FocusNode focusNode,
-    NotusDocument document,
-    ZefyrThemeData theme,
+    required WidgetTester tester,
+    FocusNode? focusNode,
+    NotusDocument? document,
+    ZefyrThemeData? theme,
     bool autofocus = false,
-    ZefyrImageDelegate imageDelegate,
+    ZefyrImageDelegate? imageDelegate,
   }) {
     focusNode ??= FocusNode();
     document ??= NotusDocument.fromDelta(delta);
@@ -55,7 +55,7 @@ class EditorSandBox {
     return tester.pumpAndSettle();
   }
 
-  Future<void> updateSelection({int base, int extent}) {
+  Future<void> updateSelection({required int base, required int extent}) {
     controller.updateSelection(
       TextSelection(baseOffset: base, extentOffset: extent),
     );
@@ -119,16 +119,16 @@ class EditorSandBox {
 
 class _ZefyrSandbox extends StatefulWidget {
   const _ZefyrSandbox({
-    Key key,
-    @required this.controller,
-    @required this.focusNode,
+    Key? key,
+    required this.controller,
+    required this.focusNode,
     this.autofocus = false,
     this.imageDelegate,
   }) : super(key: key);
   final ZefyrController controller;
   final FocusNode focusNode;
   final bool autofocus;
-  final ZefyrImageDelegate imageDelegate;
+  final ZefyrImageDelegate? imageDelegate;
 
   @override
   _ZefyrSandboxState createState() => _ZefyrSandboxState();
@@ -163,7 +163,7 @@ class MultiEditorSandbox {
   final FocusNode secondFocusNode;
   final Widget widget;
 
-  factory MultiEditorSandbox({@required WidgetTester tester}) {
+  factory MultiEditorSandbox({required WidgetTester tester}) {
     final firstEditorKey = UniqueKey();
     final secondEditorKey = UniqueKey();
     final firstFocusNode = FocusNode();
@@ -204,12 +204,12 @@ class MultiEditorSandbox {
   }
 
   MultiEditorSandbox._({
-    @required this.tester,
-    @required this.widget,
-    @required this.firstEditorKey,
-    @required this.secondEditorKey,
-    @required this.firstFocusNode,
-    @required this.secondFocusNode,
+    required this.tester,
+    required this.widget,
+    required this.firstEditorKey,
+    required this.secondEditorKey,
+    required this.firstFocusNode,
+    required this.secondFocusNode,
   });
 
   Future<void> pump() async {

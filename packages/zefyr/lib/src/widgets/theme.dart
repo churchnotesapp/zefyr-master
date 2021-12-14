@@ -13,9 +13,9 @@ class ZefyrTheme extends InheritedWidget {
   ///
   /// The [data] and [child] arguments must not be null.
   ZefyrTheme({
-    Key key,
-    @required this.data,
-    @required Widget child,
+    Key? key,
+    required this.data,
+    required Widget child,
   })  : assert(data != null),
         assert(child != null),
         super(key: key, child: child);
@@ -31,12 +31,12 @@ class ZefyrTheme extends InheritedWidget {
   /// Returns `null` if there is no [ZefyrTheme] in the given build context
   /// and [nullOk] is set to `true`. If [nullOk] is set to `false` (default)
   /// then this method asserts.
-  static ZefyrThemeData of(BuildContext context, {bool nullOk = false}) {
+  static ZefyrThemeData? of(BuildContext context, {bool nullOk = false}) {
     final widget = context.dependOnInheritedWidgetOfExactType<ZefyrTheme>();
     if (widget == null && nullOk) return null;
     assert(widget != null,
         '$ZefyrTheme.of() called with a context that does not contain a ZefyrEditor.');
-    return widget.data;
+    return widget!.data;
   }
 }
 
@@ -49,17 +49,17 @@ class ZefyrThemeData {
   ///
   /// Defines text style and spacing for regular paragraphs of text with
   /// no style attributes applied.
-  final LineTheme defaultLineTheme;
+  final LineTheme? defaultLineTheme;
 
   /// The text styles, padding and decorations used to render text with
   /// different style attributes.
-  final AttributeTheme attributeTheme;
+  final AttributeTheme? attributeTheme;
 
   /// The width of indentation used for blocks (lists, quotes, code).
-  final double indentWidth;
+  final double? indentWidth;
 
   /// The colors used to render editor toolbar.
-  final ToolbarTheme toolbarTheme;
+  final ToolbarTheme? toolbarTheme;
 
   /// Creates a [ZefyrThemeData] given a set of exact values.
   const ZefyrThemeData({
@@ -90,10 +90,10 @@ class ZefyrThemeData {
   /// Creates a copy of this theme but with the given fields replaced with
   /// the new values.
   ZefyrThemeData copyWith({
-    LineTheme defaultLineTheme,
-    AttributeTheme attributeTheme,
-    double indentWidth,
-    ToolbarTheme toolbarTheme,
+    LineTheme? defaultLineTheme,
+    AttributeTheme? attributeTheme,
+    double? indentWidth,
+    ToolbarTheme? toolbarTheme,
   }) {
     return ZefyrThemeData(
       defaultLineTheme: defaultLineTheme ?? this.defaultLineTheme,
@@ -152,13 +152,13 @@ class LineTheme {
   final EdgeInsets padding;
 
   /// Creates a [LineTheme] given a set of exact values.
-  LineTheme({@required this.textStyle, @required this.padding})
+  LineTheme({required this.textStyle, required this.padding})
       : assert(textStyle != null),
         assert(padding != null);
 
   /// Creates a copy of this theme but with the given fields replaced with
   /// the new values.
-  LineTheme copyWith({TextStyle textStyle, EdgeInsets padding}) {
+  LineTheme copyWith({TextStyle? textStyle, EdgeInsets? padding}) {
     return LineTheme(
       textStyle: textStyle ?? this.textStyle,
       padding: padding ?? this.padding,
@@ -173,7 +173,7 @@ class LineTheme {
   ///
   /// If padding property is set in other then it replaces value of this
   /// theme.
-  LineTheme merge(LineTheme other) {
+  LineTheme merge(LineTheme? other) {
     if (other == null) return this;
     return copyWith(
       textStyle: textStyle?.merge(other.textStyle) ?? other.textStyle,
@@ -201,7 +201,7 @@ class BlockTheme {
   /// Takes precedence over line-level text style set by [LineTheme] if
   /// [inheritLineTextStyle] is set to `false`. Otherwise this text style
   /// is merged with the line's style.
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   /// Whether [textStyle] specified by this block theme should be merged with
   /// text style of each individual line.
@@ -214,12 +214,12 @@ class BlockTheme {
   final bool inheritLineTextStyle;
 
   /// Space around the block.
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
 
   /// Space around each individual line within a block, can be null.
   ///
   /// Takes precedence over line padding set in [LineTheme].
-  final EdgeInsets linePadding;
+  final EdgeInsets? linePadding;
 
   /// Creates a [BlockTheme] given a set of exact values.
   const BlockTheme({
@@ -232,10 +232,10 @@ class BlockTheme {
   /// Creates a copy of this theme but with the given fields replaced with
   /// the new values.
   BlockTheme copyWith({
-    TextStyle textStyle,
-    EdgeInsets padding,
-    bool inheritLineTextStyle,
-    EdgeInsets linePadding,
+    TextStyle? textStyle,
+    EdgeInsets? padding,
+    bool? inheritLineTextStyle,
+    EdgeInsets? linePadding,
   }) {
     return BlockTheme(
       textStyle: textStyle ?? this.textStyle,
@@ -253,7 +253,7 @@ class BlockTheme {
   ///
   /// If padding property is set in other then it replaces value of this
   /// theme. [linePadding] follows the same logic.
-  BlockTheme merge(BlockTheme other) {
+  BlockTheme merge(BlockTheme? other) {
     if (other == null) return this;
     return copyWith(
       textStyle: textStyle?.merge(other.textStyle) ?? other.textStyle,
@@ -282,37 +282,37 @@ class BlockTheme {
 @immutable
 class AttributeTheme {
   /// Style used to render "bold" text.
-  final TextStyle bold;
+  final TextStyle? bold;
 
   /// Style used to render "italic" text.
-  final TextStyle italic;
+  final TextStyle? italic;
 
   /// Style used to render "underline" text.
-  final TextStyle underline;
+  final TextStyle? underline;
 
   /// Style used to render text containing links.
-  final TextStyle link;
+  final TextStyle? link;
 
   /// Style theme used to render largest headings.
-  final LineTheme heading1;
+  final LineTheme? heading1;
 
   /// Style theme used to render medium headings.
-  final LineTheme heading2;
+  final LineTheme? heading2;
 
   /// Style theme used to render smaller headings.
-  final LineTheme heading3;
+  final LineTheme? heading3;
 
   /// Style theme used to render bullet lists.
-  final BlockTheme bulletList;
+  final BlockTheme? bulletList;
 
   /// Style theme used to render number lists.
-  final BlockTheme numberList;
+  final BlockTheme? numberList;
 
   /// Style theme used to render quote blocks.
-  final BlockTheme quote;
+  final BlockTheme? quote;
 
   /// Style theme used to render code blocks.
-  final BlockTheme code;
+  final BlockTheme? code;
 
   /// Creates a [AttributeTheme] given a set of exact values.
   AttributeTheme({
@@ -359,7 +359,7 @@ class AttributeTheme {
       heading1: LineTheme(
         textStyle: defaultLineTheme.textStyle.copyWith(
           fontSize: 34.0,
-          color: defaultLineTheme.textStyle.color.withOpacity(0.7),
+          color: defaultLineTheme.textStyle.color!.withOpacity(0.7),
           height: 1.15,
           fontWeight: FontWeight.w300,
         ),
@@ -368,7 +368,7 @@ class AttributeTheme {
       heading2: LineTheme(
         textStyle: defaultLineTheme.textStyle.copyWith(
           fontSize: 24.0,
-          color: defaultLineTheme.textStyle.color.withOpacity(0.7),
+          color: defaultLineTheme.textStyle.color!.withOpacity(0.7),
           height: 1.15,
           fontWeight: FontWeight.normal,
         ),
@@ -377,7 +377,7 @@ class AttributeTheme {
       heading3: LineTheme(
         textStyle: defaultLineTheme.textStyle.copyWith(
           fontSize: 20.0,
-          color: defaultLineTheme.textStyle.color.withOpacity(0.7),
+          color: defaultLineTheme.textStyle.color!.withOpacity(0.7),
           height: 1.15,
           fontWeight: FontWeight.w500,
         ),
@@ -394,7 +394,7 @@ class AttributeTheme {
       quote: BlockTheme(
         padding: EdgeInsets.symmetric(vertical: 8.0),
         textStyle: TextStyle(
-          color: defaultLineTheme.textStyle.color.withOpacity(0.6),
+          color: defaultLineTheme.textStyle.color!.withOpacity(0.6),
         ),
         inheritLineTextStyle: true,
       ),
@@ -403,7 +403,7 @@ class AttributeTheme {
         textStyle: TextStyle(
           fontFamily: monospaceFontFamily,
           fontSize: 14.0,
-          color: defaultLineTheme.textStyle.color.withOpacity(0.8),
+          color: defaultLineTheme.textStyle.color!.withOpacity(0.8),
           height: 1.25,
         ),
         inheritLineTextStyle: false,
@@ -415,17 +415,17 @@ class AttributeTheme {
   /// Creates a new [AttributeTheme] where each property from this object has
   /// been merged with the matching property from the `other` object.
   AttributeTheme copyWith({
-    TextStyle bold,
-    TextStyle italic,
-    TextStyle underline,
-    TextStyle link,
-    LineTheme heading1,
-    LineTheme heading2,
-    LineTheme heading3,
-    BlockTheme bulletList,
-    BlockTheme numberList,
-    BlockTheme quote,
-    BlockTheme code,
+    TextStyle? bold,
+    TextStyle? italic,
+    TextStyle? underline,
+    TextStyle? link,
+    LineTheme? heading1,
+    LineTheme? heading2,
+    LineTheme? heading3,
+    BlockTheme? bulletList,
+    BlockTheme? numberList,
+    BlockTheme? quote,
+    BlockTheme? code,
   }) {
     return AttributeTheme(
       bold: bold ?? this.bold,
@@ -444,7 +444,7 @@ class AttributeTheme {
 
   /// Creates a new [AttributeTheme] where each property from this object has
   /// been merged with the matching property from the `other` object.
-  AttributeTheme merge(AttributeTheme other) {
+  AttributeTheme merge(AttributeTheme? other) {
     if (other == null) return this;
     return copyWith(
       bold: bold?.merge(other.bold) ?? other.bold,
@@ -504,7 +504,7 @@ class ToolbarTheme {
   final Color toggleColor;
 
   /// Color of button icons.
-  final Color iconColor;
+  final Color? iconColor;
 
   /// Color of button icons in disabled state.
   final Color disabledIconColor;
@@ -525,19 +525,19 @@ class ToolbarTheme {
   }
 
   ToolbarTheme._({
-    @required this.color,
-    @required this.toggleColor,
-    @required this.iconColor,
-    @required this.disabledIconColor,
+    required this.color,
+    required this.toggleColor,
+    required this.iconColor,
+    required this.disabledIconColor,
   });
 
   /// Creates a new [ToolbarTheme] where each property from this object has
   /// been merged with the matching property from the `other` object.
   ToolbarTheme copyWith({
-    Color color,
-    Color toggleColor,
-    Color iconColor,
-    Color disabledIconColor,
+    Color? color,
+    Color? toggleColor,
+    Color? iconColor,
+    Color? disabledIconColor,
   }) {
     return ToolbarTheme._(
       color: color ?? this.color,
@@ -549,7 +549,7 @@ class ToolbarTheme {
 
   /// Creates a new [ToolbarTheme] where each property from this object has
   /// been merged with the matching property from the `other` object.
-  ToolbarTheme merge(ToolbarTheme other) {
+  ToolbarTheme merge(ToolbarTheme? other) {
     if (other == null) return this;
     return copyWith(
       color: other.color ?? color,

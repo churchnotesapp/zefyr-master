@@ -41,9 +41,9 @@ class ZefyrMode {
 
   /// Creates new mode which describes allowed interactions in Zefyr editor.
   const ZefyrMode({
-    @required this.canEdit,
-    @required this.canSelect,
-    @required this.canFormat,
+    required this.canEdit,
+    required this.canSelect,
+    required this.canFormat,
   });
 
   @override

@@ -60,25 +60,25 @@ abstract class ZefyrToolbarDelegate {
   ///
   /// Returned widget is usually an instance of [ZefyrButton].
   Widget buildButton(BuildContext context, ZefyrToolbarAction action,
-      {VoidCallback onPressed});
+      {VoidCallback? onPressed});
 }
 
 /// Scaffold for [ZefyrToolbar].
 class ZefyrToolbarScaffold extends StatelessWidget {
   const ZefyrToolbarScaffold({
-    Key key,
-    @required this.body,
+    Key? key,
+    required this.body,
     this.trailing,
     this.autoImplyTrailing = true,
   }) : super(key: key);
 
   final Widget body;
-  final Widget trailing;
+  final Widget? trailing;
   final bool autoImplyTrailing;
 
   @override
   Widget build(BuildContext context) {
-    final theme = ZefyrTheme.of(context).toolbarTheme;
+    final theme = ZefyrTheme.of(context)!.toolbarTheme!;
     final toolbar = ZefyrToolbar.of(context);
     final constraints =
         BoxConstraints.tightFor(height: ZefyrToolbar.kToolbarHeight);
@@ -87,9 +87,9 @@ class ZefyrToolbarScaffold extends StatelessWidget {
     ];
 
     if (trailing != null) {
-      children.add(trailing);
+      children.add(trailing!);
     } else if (autoImplyTrailing) {
-      children.add(toolbar.buildButton(context, ZefyrToolbarAction.close));
+      children.add(toolbar!.buildButton(context, ZefyrToolbarAction.close));
     }
     return Container(
       constraints: constraints,
@@ -103,19 +103,19 @@ class ZefyrToolbar extends StatefulWidget implements PreferredSizeWidget {
   static const kToolbarHeight = 50.0;
 
   const ZefyrToolbar({
-    Key key,
-    @required this.editor,
+    Key? key,
+    required this.editor,
     this.autoHide = true,
     this.delegate,
   }) : super(key: key);
 
-  final ZefyrToolbarDelegate delegate;
-  final ZefyrScope editor;
+  final ZefyrToolbarDelegate? delegate;
+  final ZefyrScope? editor;
 
   /// Whether to automatically hide this toolbar when editor loses focus.
   final bool autoHide;
 
-  static ZefyrToolbarState of(BuildContext context) {
+  static ZefyrToolbarState? of(BuildContext context) {
     final scope =
         context.dependOnInheritedWidgetOfExactType<_ZefyrToolbarScope>();
     return scope?.toolbar;
@@ -129,7 +129,7 @@ class ZefyrToolbar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _ZefyrToolbarScope extends InheritedWidget {
-  _ZefyrToolbarScope({Key key, @required Widget child, @required this.toolbar})
+  _ZefyrToolbarScope({Key? key, required Widget child, required this.toolbar})
       : super(key: key, child: child);
 
   final ZefyrToolbarState toolbar;
@@ -145,24 +145,24 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
   final Key _toolbarKey = UniqueKey();
   final Key _overlayKey = UniqueKey();
 
-  ZefyrToolbarDelegate _delegate;
-  AnimationController _overlayAnimation;
-  WidgetBuilder _overlayBuilder;
-  Completer<void> _overlayCompleter;
+  late ZefyrToolbarDelegate _delegate;
+  late AnimationController _overlayAnimation;
+  WidgetBuilder? _overlayBuilder;
+  Completer<void>? _overlayCompleter;
 
-  TextSelection _selection;
+  TextSelection? _selection;
 
   void markNeedsRebuild() {
     setState(() {
-      if (_selection != editor.selection) {
-        _selection = editor.selection;
+      if (_selection != editor!.selection) {
+        _selection = editor!.selection;
         closeOverlay();
       }
     });
   }
 
   Widget buildButton(BuildContext context, ZefyrToolbarAction action,
-      {VoidCallback onPressed}) {
+      {VoidCallback? onPressed}) {
     return _delegate.buildButton(context, action, onPressed: onPressed);
   }
 
@@ -190,7 +190,7 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
 
   bool get hasOverlay => _overlayBuilder != null;
 
-  ZefyrScope get editor => widget.editor;
+  ZefyrScope? get editor => widget.editor;
 
   @override
   void initState() {
@@ -198,7 +198,7 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
     _delegate = widget.delegate ?? _DefaultZefyrToolbarDelegate();
     _overlayAnimation =
         AnimationController(vsync: this, duration: Duration(milliseconds: 100));
-    _selection = editor.selection;
+    _selection = editor!.selection;
   }
 
   @override
@@ -225,7 +225,7 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
       key: _toolbarKey,
       body: ZefyrButtonList(buttons: _buildButtons(context)),
       trailing: Row(children: [
-        ZefyrScaffold.of(context).widget.trailingChild ?? Container(),
+        ZefyrScaffold.of(context)!.widget.trailingChild ?? Container(),
         buildButton(context, ZefyrToolbarAction.hideKeyboard)
       ],),
     );
@@ -233,7 +233,7 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
     layers.add(toolbar);
 
     if (hasOverlay) {
-      Widget widget = Builder(builder: _overlayBuilder);
+      Widget widget = Builder(builder: _overlayBuilder!);
       assert(widget != null);
       final overlay = FadeTransition(
         key: _overlayKey,
@@ -262,7 +262,7 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
       HeadingButton(),
       buildButton(context, ZefyrToolbarAction.bulletList),
       buildButton(context, ZefyrToolbarAction.numberList),
-      if (editor.imageDelegate != null) ImageButton(),
+      if (editor!.imageDelegate != null) ImageButton(),
     ];
     return buttons;
   }
@@ -270,7 +270,7 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
 
 /// Scrollable list of toolbar buttons.
 class ZefyrButtonList extends StatefulWidget {
-  const ZefyrButtonList({Key key, @required this.buttons}) : super(key: key);
+  const ZefyrButtonList({Key? key, required this.buttons}) : super(key: key);
   final List<Widget> buttons;
 
   @override
@@ -294,7 +294,7 @@ class _ZefyrButtonListState extends State<ZefyrButtonList> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ZefyrTheme.of(context).toolbarTheme;
+    final theme = ZefyrTheme.of(context)!.toolbarTheme!;
     final color = theme.iconColor;
     final list = ListView(
       scrollDirection: Axis.horizontal,
@@ -375,10 +375,10 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
 
   @override
   Widget buildButton(BuildContext context, ZefyrToolbarAction action,
-      {VoidCallback onPressed}) {
+      {VoidCallback? onPressed}) {
     final theme = Theme.of(context);
     if (kDefaultButtonIcons.containsKey(action)) {
-      final icon = kDefaultButtonIcons[action];
+      final icon = kDefaultButtonIcons[action]!;
       final size = kSpecialIconSizes[action];
       return ZefyrButton.icon(
         action: action,
@@ -387,9 +387,9 @@ class _DefaultZefyrToolbarDelegate implements ZefyrToolbarDelegate {
         onPressed: onPressed,
       );
     } else {
-      final text = kDefaultButtonTexts[action];
+      final text = kDefaultButtonTexts[action]!;
       assert(text != null);
-      final style = theme.textTheme.caption
+      final style = theme.textTheme.caption!
           .copyWith(fontWeight: FontWeight.bold, fontSize: 14.0);
       return ZefyrButton.text(
         action: action,

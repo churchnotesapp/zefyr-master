@@ -16,7 +16,7 @@ import 'theme.dart';
 
 /// Represents single line of rich text document in Zefyr editor.
 class ZefyrLine extends StatefulWidget {
-  const ZefyrLine({Key key, @required this.node, this.style, this.padding})
+  const ZefyrLine({Key? key, required this.node, this.style, this.padding})
       : assert(node != null),
         super(key: key);
 
@@ -25,10 +25,10 @@ class ZefyrLine extends StatefulWidget {
 
   /// Style to apply to this line. Required for lines with text contents,
   /// ignored for lines containing embeds.
-  final TextStyle style;
+  final TextStyle? style;
 
   /// Padding to add around this paragraph.
-  final EdgeInsets padding;
+  final EdgeInsets? padding;
 
   @override
   _ZefyrLineState createState() => _ZefyrLineState();
@@ -39,7 +39,7 @@ class _ZefyrLineState extends State<ZefyrLine> {
 
   @override
   Widget build(BuildContext context) {
-    final scope = ZefyrScope.of(context);
+    final scope = ZefyrScope.of(context)!;
     if (scope.isEditable) {
       ensureVisible(context, scope);
     }
@@ -57,7 +57,7 @@ class _ZefyrLineState extends State<ZefyrLine> {
     }
 
     if (scope.isEditable) {
-      Color cursorColor;
+      Color? cursorColor;
       switch (theme.platform) {
         case TargetPlatform.iOS:
         case TargetPlatform.macOS:
@@ -86,25 +86,25 @@ class _ZefyrLineState extends State<ZefyrLine> {
     }
 
     if (widget.padding != null) {
-      return Padding(padding: widget.padding, child: content);
+      return Padding(padding: widget.padding!, child: content);
     }
     return content;
   }
 
   void ensureVisible(BuildContext context, ZefyrScope scope) {
-    if (scope.selection.isCollapsed &&
-        widget.node.containsOffset(scope.selection.extentOffset)) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (scope.selection!.isCollapsed &&
+        widget.node.containsOffset(scope.selection!.extentOffset)) {
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
         bringIntoView(context);
       });
     }
   }
 
   void bringIntoView(BuildContext context) {
-    final scrollable = Scrollable.of(context);
-    final object = context.findRenderObject();
+    final scrollable = Scrollable.of(context)!;
+    final object = context.findRenderObject()!;
     assert(object.attached);
-    final viewport = RenderAbstractViewport.of(object);
+    final viewport = RenderAbstractViewport.of(object)!;
     assert(viewport != null);
 
     final offset = scrollable.position.pixels;
@@ -127,8 +127,8 @@ class _ZefyrLineState extends State<ZefyrLine> {
     return TextSpan(style: widget.style, children: children);
   }
 
-  TextSpan _segmentToTextSpan(Node node, ZefyrThemeData theme) {
-    final TextNode segment = node;
+  TextSpan _segmentToTextSpan(Node node, ZefyrThemeData? theme) {
+    final TextNode segment = node as TextNode;
     final attrs = segment.style;
 
     return TextSpan(
@@ -137,26 +137,26 @@ class _ZefyrLineState extends State<ZefyrLine> {
     );
   }
 
-  TextStyle _getTextStyle(NotusStyle style, ZefyrThemeData theme) {
+  TextStyle _getTextStyle(NotusStyle style, ZefyrThemeData? theme) {
     var result = TextStyle();
     if (style.containsSame(NotusAttribute.bold)) {
-      result = result.merge(theme.attributeTheme.bold);
+      result = result.merge(theme!.attributeTheme!.bold);
     }
     if (style.containsSame(NotusAttribute.italic)) {
-      result = result.merge(theme.attributeTheme.italic);
+      result = result.merge(theme!.attributeTheme!.italic);
     }
     if (style.containsSame(NotusAttribute.underline)) {
-      result = result.merge(theme.attributeTheme.underline);
+      result = result.merge(theme!.attributeTheme!.underline);
     }
     if (style.contains(NotusAttribute.link)) {
-      result = result.merge(theme.attributeTheme.link);
+      result = result.merge(theme!.attributeTheme!.link);
     }
     return result;
   }
 
   Widget buildEmbed(BuildContext context, ZefyrScope scope) {
-    EmbedNode node = widget.node.children.single;
-    EmbedAttribute embed = node.style.get(NotusAttribute.embed);
+    EmbedNode node = widget.node.children.single as EmbedNode;
+    EmbedAttribute embed = node.style.get(NotusAttribute.embed) as EmbedAttribute;
 
     if (embed.type == EmbedType.horizontalRule) {
       return ZefyrHorizontalRule(node: node);
