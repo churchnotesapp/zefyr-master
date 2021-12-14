@@ -12,7 +12,7 @@ abstract class FormatRule {
 
   /// Applies heuristic rule to a retain (format) operation on a [document] and
   /// returns resulting [Delta].
-  Delta apply(Delta document, int index, int length, NotusAttribute attribute);
+  Delta? apply(Delta document, int index, int length, NotusAttribute attribute);
 }
 
 /// Produces Delta with line-level attributes applied strictly to
@@ -21,7 +21,7 @@ class ResolveLineFormatRule extends FormatRule {
   const ResolveLineFormatRule() : super();
 
   @override
-  Delta apply(Delta document, int index, int length, NotusAttribute attribute) {
+  Delta? apply(Delta document, int index, int length, NotusAttribute attribute) {
     if (attribute.scope != NotusAttributeScope.line) return null;
 
     var result = Delta()..retain(index);
@@ -76,7 +76,7 @@ class ResolveInlineFormatRule extends FormatRule {
   const ResolveInlineFormatRule();
 
   @override
-  Delta apply(Delta document, int index, int length, NotusAttribute attribute) {
+  Delta? apply(Delta document, int index, int length, NotusAttribute attribute) {
     if (attribute.scope != NotusAttributeScope.inline) return null;
 
     final result = Delta()..retain(index);
@@ -112,7 +112,7 @@ class FormatLinkAtCaretPositionRule extends FormatRule {
   const FormatLinkAtCaretPositionRule();
 
   @override
-  Delta apply(Delta document, int index, int length, NotusAttribute attribute) {
+  Delta? apply(Delta document, int index, int length, NotusAttribute attribute) {
     if (attribute.key != NotusAttribute.link.key) return null;
     // If user selection is not collapsed we let it fallback to default rule
     // which simply applies the attribute to selected range.
@@ -150,7 +150,7 @@ class FormatEmbedsRule extends FormatRule {
   const FormatEmbedsRule();
 
   @override
-  Delta apply(Delta document, int index, int length, NotusAttribute attribute) {
+  Delta? apply(Delta document, int index, int length, NotusAttribute attribute) {
     // We are only interested in embed attributes
     if (attribute is! EmbedAttribute) return null;
     EmbedAttribute embed = attribute;
@@ -198,13 +198,13 @@ class FormatEmbedsRule extends FormatRule {
     return result;
   }
 
-  Map<String, dynamic> _getLineStyle(
+  Map<String, dynamic>? _getLineStyle(
       DeltaIterator iterator, Operation current) {
     if ((current.data as String).contains('\n')) {
       return current.attributes;
     }
     // Continue looking for line-break.
-    Map<String, dynamic> attributes;
+    Map<String, dynamic>? attributes;
     while (iterator.hasNext) {
       final op = iterator.next();
       final lf = (op.data as String).indexOf('\n');

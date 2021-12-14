@@ -193,7 +193,7 @@ class NotusDocument {
   ///   for every character within this range (line-break characters excluded).
   NotusStyle collectStyle(int index, int length) {
     var result = lookupLine(index);
-    LineNode line = result.node;
+    LineNode line = result.node as LineNode;
     return line.collectStyle(result.offset, length);
   }
 
@@ -202,7 +202,7 @@ class NotusDocument {
     // TODO: prevent user from moving caret after last line-break.
     var result = _root.lookup(offset, inclusive: true);
     if (result.node is LineNode) return result;
-    BlockNode block = result.node;
+    BlockNode block = result.node as BlockNode;
     return block.lookup(result.offset, inclusive: true);
   }
 
@@ -227,7 +227,7 @@ class NotusDocument {
       final attributes =
           op.attributes != null ? NotusStyle.fromJson(op.attributes) : null;
       if (op.isInsert) {
-        _root.insert(offset, op.data, attributes);
+        _root.insert(offset, op.data as String, attributes);
       } else if (op.isDelete) {
         _root.delete(offset, op.length);
       } else if (op.attributes != null) {
@@ -276,7 +276,7 @@ class NotusDocument {
       final style =
           op.attributes != null ? NotusStyle.fromJson(op.attributes) : null;
       if (op.isInsert) {
-        _root.insert(offset, op.data, style);
+        _root.insert(offset, op.data as String, style);
       } else {
         throw ArgumentError.value(doc,
             'Document Delta can only contain insert operations but ${op.key} found.');

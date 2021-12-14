@@ -12,7 +12,7 @@ abstract class DeleteRule {
 
   /// Applies heuristic rule to a delete operation on a [document] and returns
   /// resulting [Delta].
-  Delta apply(Delta document, int index, int length);
+  Delta? apply(Delta document, int index, int length);
 }
 
 /// Fallback rule for delete operations which simply deletes specified text
@@ -38,7 +38,7 @@ class PreserveLineStyleOnMergeRule extends DeleteRule {
   const PreserveLineStyleOnMergeRule();
 
   @override
-  Delta apply(Delta document, int index, int length) {
+  Delta? apply(Delta document, int index, int length) {
     final iter = DeltaIterator(document);
     iter.skip(index);
     final target = iter.next(1);
@@ -59,7 +59,7 @@ class PreserveLineStyleOnMergeRule extends DeleteRule {
       var attributes = _unsetAttributes(op.attributes);
       if (target.isNotPlain) {
         attributes ??= <String, dynamic>{};
-        attributes.addAll(target.attributes);
+        attributes.addAll(target.attributes!);
       }
       result..retain(lf)..retain(1, attributes);
       break;
@@ -67,7 +67,7 @@ class PreserveLineStyleOnMergeRule extends DeleteRule {
     return result;
   }
 
-  Map<String, dynamic> _unsetAttributes(Map<String, dynamic> attributes) {
+  Map<String, dynamic>? _unsetAttributes(Map<String, dynamic>? attributes) {
     if (attributes == null) return null;
     return attributes.map<String, dynamic>(
         (String key, dynamic value) => MapEntry<String, dynamic>(key, null));
@@ -79,7 +79,7 @@ class EnsureEmbedLineRule extends DeleteRule {
   const EnsureEmbedLineRule();
 
   @override
-  Delta apply(Delta document, int index, int length) {
+  Delta? apply(Delta document, int index, int length) {
     final iter = DeltaIterator(document);
 
     // First, check if line-break deleted after an embed.

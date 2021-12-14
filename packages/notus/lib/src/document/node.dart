@@ -21,14 +21,14 @@ import 'line.dart';
 /// considered [mounted] when the [parent] property is not `null`.
 abstract class Node extends LinkedListEntry<Node> {
   /// Current parent of this node. May be null if this node is not mounted.
-  ContainerNode get parent => _parent;
-  ContainerNode _parent;
+  ContainerNode? get parent => _parent;
+  ContainerNode? _parent;
 
   /// Returns `true` if this node is the first node in the [parent] list.
-  bool get isFirst => list.first == this;
+  bool get isFirst => list!.first == this;
 
   /// Returns `true` if this node is the last node in the [parent] list.
-  bool get isLast => list.last == this;
+  bool get isLast => list!.last == this;
 
   /// Length of this node in characters.
   int get length;
@@ -43,9 +43,9 @@ abstract class Node extends LinkedListEntry<Node> {
   int get offset {
     if (isFirst) return 0;
     var offset = 0;
-    var node = this;
+    Node node = this;
     do {
-      node = node.previous;
+      node = node.previous!;
       offset += node.length;
     } while (!node.isFirst);
     return offset;
@@ -53,7 +53,7 @@ abstract class Node extends LinkedListEntry<Node> {
 
   /// Offset in characters of this node in the document.
   int get documentOffset {
-    final parentOffset = (_parent is! RootNode) ? _parent.documentOffset : 0;
+    final parentOffset = (_parent is! RootNode) ? _parent!.documentOffset : 0;
     return parentOffset + offset;
   }
 
@@ -77,11 +77,11 @@ abstract class Node extends LinkedListEntry<Node> {
   String toPlainText();
 
   /// Insert [text] at specified character [index] with style [style].
-  void insert(int index, String text, NotusStyle style);
+  void insert(int index, String text, NotusStyle? style);
 
   /// Format [length] characters of this node starting from [index] with
   /// specified style [style].
-  void retain(int index, int length, NotusStyle style);
+  void retain(int index, int length, NotusStyle? style);
 
   /// Delete [length] characters of this node starting from [index].
   void delete(int index, int length);
@@ -111,7 +111,7 @@ abstract class Node extends LinkedListEntry<Node> {
 /// Result of a child lookup in a [ContainerNode].
 class LookupResult {
   /// The child node if found, otherwise `null`.
-  final Node node;
+  final Node? node;
 
   /// Starting offset within the child [node] which points at the same
   /// character in the document as the original offset passed to
@@ -135,7 +135,7 @@ class LookupResult {
 ///
 /// Most of the operation handling logic is implemented by [LineNode] and
 /// [TextNode].
-abstract class ContainerNode<T extends Node> extends Node {
+abstract class ContainerNode<T extends Node?> extends Node {
   final LinkedList<Node> _children = LinkedList<Node>();
 
   /// List of children.
@@ -167,29 +167,29 @@ abstract class ContainerNode<T extends Node> extends Node {
   void add(T node) {
     assert(node._parent == null);
     node._parent = this;
-    _children.add(node);
+    _children.add(node!);
   }
 
   /// Adds [node] to the beginning of this container children list.
   void addFirst(T node) {
     assert(node._parent == null);
     node._parent = this;
-    _children.addFirst(node);
+    _children.addFirst(node!);
   }
 
   /// Removes [node] from this container.
   void remove(T node) {
     assert(node._parent == this);
     node._parent = null;
-    _children.remove(node);
+    _children.remove(node!);
   }
 
   /// Moves children of this node to [newParent].
-  void moveChildren(ContainerNode newParent) {
+  void moveChildren(ContainerNode? newParent) {
     if (isEmpty) return;
-    T toBeOptimized = newParent.isEmpty ? null : newParent.last;
+    T? toBeOptimized = newParent!.isEmpty ? null : newParent.last as T?;
     while (isNotEmpty) {
-      T child = first;
+      T child = first as T;
       child.unlink();
       newParent.add(child);
     }
@@ -233,7 +233,7 @@ abstract class ContainerNode<T extends Node> extends Node {
   int get length => _children.fold(0, (current, node) => current + node.length);
 
   @override
-  void insert(int index, String value, NotusStyle style) {
+  void insert(int index, String value, NotusStyle? style) {
     assert(index == 0 || (index > 0 && index < length));
 
     if (isEmpty) {
@@ -243,22 +243,22 @@ abstract class ContainerNode<T extends Node> extends Node {
       node.insert(index, value, style);
     } else {
       final result = lookup(index);
-      result.node.insert(result.offset, value, style);
+      result.node!.insert(result.offset, value, style);
     }
   }
 
   @override
-  void retain(int index, int length, NotusStyle attributes) {
+  void retain(int index, int length, NotusStyle? attributes) {
     assert(isNotEmpty);
     final res = lookup(index);
-    res.node.retain(res.offset, length, attributes);
+    res.node!.retain(res.offset, length, attributes);
   }
 
   @override
   void delete(int index, int length) {
     assert(isNotEmpty);
     final res = lookup(index);
-    res.node.delete(res.offset, length);
+    res.node!.delete(res.offset, length);
   }
 
   @override
@@ -296,9 +296,9 @@ abstract class StyledNodeMixin implements StyledNode {
 }
 
 /// Root node of document tree.
-class RootNode extends ContainerNode<ContainerNode<Node>> {
+class RootNode extends ContainerNode<ContainerNode<Node?>> {
   @override
-  ContainerNode<Node> get defaultChild => LineNode();
+  ContainerNode<Node?> get defaultChild => LineNode();
 
   @override
   void optimize() {/* no-op */}
