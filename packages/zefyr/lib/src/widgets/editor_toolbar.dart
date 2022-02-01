@@ -407,6 +407,7 @@ class ZefyrToolbar extends StatefulWidget implements PreferredSizeWidget {
     bool hideUnderLineButton = false,
     bool hideStrikeThrough = false,
     bool hideInlineCode = false,
+    bool hideHighlightCode = false,
     bool hideHeadingStyle = false,
     bool hideListNumbers = false,
     bool hideListBullets = false,
@@ -468,10 +469,10 @@ class ZefyrToolbar extends StatefulWidget implements PreferredSizeWidget {
       ),
       const SizedBox(width: 1),
       Visibility(
-        visible: !hideInlineCode,
+        visible: !hideHighlightCode,
         child: ToggleStyleButton(
-          attribute: NotusAttribute.inlineCode,
-          icon: Icons.highlight,
+          attribute: NotusAttribute.highlight,
+          icon: Icons.edit,
           controller: controller,
         ),
       ),

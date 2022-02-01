@@ -3,6 +3,8 @@ description: Clean, minimalistic and collaboration-ready rich text editor for Fl
 version: 1.0.0-rc.4
 homepage: https://github.com/memspace/zefyr
 
+publish_to: "none"
+
 environment:
   sdk: '>=2.15.0 <3.0.0'
 
@@ -12,7 +14,12 @@ dependencies:
   collection: ^1.14.6
   url_launcher: ^6.0.9
   quill_delta: ^3.0.0-nullsafety.1
-  notus: ^1.0.0-rc.2
+  # notus: ^1.0.0-rc.2
+  notus:
+    git:
+      url: git://github.com/churchnotesapp/zefyr-master.git
+      path: packages/notus/
+      ref: 1.0.0-rc.1
   characters: ^1.0.0
 
 dev_dependencies:

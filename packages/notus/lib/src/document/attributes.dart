@@ -74,6 +74,7 @@ abstract class NotusAttributeBuilder<T> implements NotusAttributeKey<T> {
 ///   * [NotusAttribute.block]
 ///   * [NotusAttribute.direction]
 ///   * [NotusAttribute.alignment]
+///   * [NotusAttribute.highlight]
 class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   static final Map<String, NotusAttributeBuilder> _registry = {
     NotusAttribute.bold.key: NotusAttribute.bold,
@@ -87,6 +88,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.block.key: NotusAttribute.block,
     NotusAttribute.direction.key: NotusAttribute.direction,
     NotusAttribute.alignment.key: NotusAttribute.alignment,
+    NotusAttribute.highlight.key: NotusAttribute.highlight,
   };
 
   // Inline attributes
@@ -166,6 +168,9 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
 
   /// Alias for [NotusAttribute.alignment.justify]
   static NotusAttribute<String> get justify => alignment.justify;
+
+  /// Highlight attribute
+  static const highlight = _HighlightAttribute();
 
   static NotusAttribute _fromKeyValue(String key, dynamic value) {
     if (!_registry.containsKey(key)) {
@@ -376,6 +381,12 @@ class _UnderlineAttribute extends NotusAttribute<bool> {
 class _StrikethroughAttribute extends NotusAttribute<bool> {
   const _StrikethroughAttribute()
       : super._('s', NotusAttributeScope.inline, true);
+}
+
+/// Applies strikethrough style to a text segment.
+class _HighlightAttribute extends NotusAttribute<bool> {
+  const _HighlightAttribute()
+      : super._('h', NotusAttributeScope.inline, true);
 }
 
 /// Applies code style to a text segment.
