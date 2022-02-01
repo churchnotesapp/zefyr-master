@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 import 'package:collection/collection.dart';
-import 'package:quiver_hashcode/hashcode.dart';
+import 'package:quiver/core.dart';
 
 /// Scope of a style attribute, defines context in which an attribute can be
 /// applied.
@@ -42,7 +42,7 @@ abstract class NotusAttributeBuilder<T> implements NotusAttributeKey<T> {
   final String key;
   final NotusAttributeScope scope;
   NotusAttribute<T> get unset => NotusAttribute<T>._(key, scope, null);
-  NotusAttribute<T> withValue(T value) =>
+  NotusAttribute<T> withValue(T? value) =>
       NotusAttribute<T>._(key, scope, value);
 }
 
@@ -67,18 +67,26 @@ abstract class NotusAttributeBuilder<T> implements NotusAttributeKey<T> {
 ///
 ///   * [NotusAttribute.bold]
 ///   * [NotusAttribute.italic]
+///   * [NotusAttribute.underline]
+///   * [NotusAttribute.strikethrough]
 ///   * [NotusAttribute.link]
 ///   * [NotusAttribute.heading]
 ///   * [NotusAttribute.block]
+///   * [NotusAttribute.direction]
+///   * [NotusAttribute.alignment]
 class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   static final Map<String, NotusAttributeBuilder> _registry = {
     NotusAttribute.bold.key: NotusAttribute.bold,
     NotusAttribute.italic.key: NotusAttribute.italic,
     NotusAttribute.underline.key: NotusAttribute.underline,
+    NotusAttribute.strikethrough.key: NotusAttribute.strikethrough,
+    NotusAttribute.inlineCode.key: NotusAttribute.inlineCode,
     NotusAttribute.link.key: NotusAttribute.link,
     NotusAttribute.heading.key: NotusAttribute.heading,
+    NotusAttribute.checked.key: NotusAttribute.checked,
     NotusAttribute.block.key: NotusAttribute.block,
-    NotusAttribute.embed.key: NotusAttribute.embed,
+    NotusAttribute.direction.key: NotusAttribute.direction,
+    NotusAttribute.alignment.key: NotusAttribute.alignment,
   };
 
   // Inline attributes
@@ -91,6 +99,12 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
 
   /// Underline style attribute.
   static const underline = _UnderlineAttribute();
+
+  /// Strikethrough style attribute.
+  static const strikethrough = _StrikethroughAttribute();
+
+  /// Inline code style attribute.
+  static const inlineCode = _InlineCodeAttribute();
 
   /// Link style attribute.
   // ignore: const_eval_throws_exception
@@ -111,6 +125,9 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   /// Alias for [NotusAttribute.heading.level3].
   static NotusAttribute<int> get h3 => heading.level3;
 
+  /// Applies checked style to a line of text in checklist block.
+  static const checked = _CheckedAttribute();
+
   /// Block attribute
   // ignore: const_eval_throws_exception
   static const block = BlockAttributeBuilder._();
@@ -121,22 +138,41 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   /// Alias for [NotusAttribute.block.numberList].
   static NotusAttribute<String> get ol => block.numberList;
 
+  /// Alias for [NotusAttribute.block.checkList].
+  static NotusAttribute<String> get cl => block.checkList;
+
   /// Alias for [NotusAttribute.block.quote].
   static NotusAttribute<String> get bq => block.quote;
 
   /// Alias for [NotusAttribute.block.code].
   static NotusAttribute<String> get code => block.code;
 
-  /// Embed style attribute.
-  // ignore: const_eval_throws_exception
-  static const embed = EmbedAttributeBuilder._();
+  /// Direction attribute
+  static const direction = DirectionAttributeBuilder._();
+
+  /// Alias for [NotusAttribute.direction.rtl].
+  static NotusAttribute<String> get rtl => direction.rtl;
+  /// Alignment attribute
+  static const alignment = AlignmentAttributeBuilder._();
+
+  /// Alias for [NotusAttribute.alignment.unset]
+  static NotusAttribute<String> get left => alignment.unset;
+
+  /// Alias for [NotusAttribute.alignment.right]
+  static NotusAttribute<String> get right => alignment.right;
+
+  /// Alias for [NotusAttribute.alignment.center]
+  static NotusAttribute<String> get center => alignment.center;
+
+  /// Alias for [NotusAttribute.alignment.justify]
+  static NotusAttribute<String> get justify => alignment.justify;
 
   static NotusAttribute _fromKeyValue(String key, dynamic value) {
     if (!_registry.containsKey(key)) {
       throw ArgumentError.value(
           key, 'No attribute with key "$key" registered.');
     }
-    final builder = _registry[key];
+    final builder = _registry[key]!;
     return builder.withValue(value);
   }
 
@@ -158,7 +194,7 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   ///
   /// See also [unset], [NotusStyle.merge] and [NotusStyle.put]
   /// for details.
-  final T value;
+  final T? value;
 
   /// Returns special "unset" version of this attribute.
   ///
@@ -176,17 +212,14 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   bool get isInline => scope == NotusAttributeScope.inline;
 
   @override
-  NotusAttribute<T> withValue(T value) =>
+  NotusAttribute<T> withValue(T? value) =>
       NotusAttribute<T>._(key, scope, value);
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! NotusAttribute<T>) return false;
-    NotusAttribute<T> typedOther = other;
-    return key == typedOther.key &&
-        scope == typedOther.scope &&
-        value == typedOther.value;
+    return key == other.key && scope == other.scope && value == other.value;
   }
 
   @override
@@ -204,7 +237,7 @@ class NotusStyle {
 
   final Map<String, NotusAttribute> _data;
 
-  static NotusStyle fromJson(Map<String, dynamic> data) {
+  static NotusStyle fromJson(Map<String, dynamic>? data) {
     if (data == null) return NotusStyle();
 
     final result = data.map((String key, dynamic value) {
@@ -241,16 +274,15 @@ class NotusStyle {
   /// Returns `true` if this set contains attribute with the same value as
   /// [attribute].
   bool containsSame(NotusAttribute attribute) {
-    assert(attribute != null);
     return get<dynamic>(attribute) == attribute;
   }
 
   /// Returns value of specified attribute [key] in this set.
-  T value<T>(NotusAttributeKey<T> key) => get(key).value;
+  T? value<T>(NotusAttributeKey<T> key) => get(key)?.value;
 
   /// Returns [NotusAttribute] from this set by specified [key].
-  NotusAttribute<T> get<T>(NotusAttributeKey<T> key) =>
-      _data[key.key] as NotusAttribute<T>;
+  NotusAttribute<T>? get<T>(NotusAttributeKey<T> key) =>
+      _data[key.key] as NotusAttribute<T>?;
 
   /// Returns collection of all attribute keys in this set.
   Iterable<String> get keys => _data.keys;
@@ -302,7 +334,7 @@ class NotusStyle {
   }
 
   /// Returns JSON-serializable representation of this style.
-  Map<String, dynamic> toJson() => _data.isEmpty
+  Map<String, dynamic>? toJson() => _data.isEmpty
       ? null
       : _data.map<String, dynamic>((String _, NotusAttribute value) =>
           MapEntry<String, dynamic>(value.key, value.value));
@@ -311,9 +343,8 @@ class NotusStyle {
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! NotusStyle) return false;
-    NotusStyle typedOther = other;
     final eq = const MapEquality<String, NotusAttribute>();
-    return eq.equals(_data, typedOther._data);
+    return eq.equals(_data, other._data);
   }
 
   @override
@@ -339,6 +370,17 @@ class _ItalicAttribute extends NotusAttribute<bool> {
 /// Applies underline style to a text segment.
 class _UnderlineAttribute extends NotusAttribute<bool> {
   const _UnderlineAttribute() : super._('u', NotusAttributeScope.inline, true);
+}
+
+/// Applies strikethrough style to a text segment.
+class _StrikethroughAttribute extends NotusAttribute<bool> {
+  const _StrikethroughAttribute()
+      : super._('s', NotusAttributeScope.inline, true);
+}
+
+/// Applies code style to a text segment.
+class _InlineCodeAttribute extends NotusAttribute<bool> {
+  const _InlineCodeAttribute() : super._('c', NotusAttributeScope.inline, true);
 }
 
 /// Builder for link attribute values.
@@ -373,6 +415,12 @@ class HeadingAttributeBuilder extends NotusAttributeBuilder<int> {
   NotusAttribute<int> get level3 => NotusAttribute<int>._(key, scope, 3);
 }
 
+/// Applies checked style to a line in a checklist block.
+class _CheckedAttribute extends NotusAttribute<bool> {
+  const _CheckedAttribute()
+      : super._('checked', NotusAttributeScope.line, true);
+}
+
 /// Builder for block attribute styles (number/bullet lists, code and quote).
 ///
 /// There is no need to use this class directly, consider using
@@ -389,6 +437,10 @@ class BlockAttributeBuilder extends NotusAttributeBuilder<String> {
   NotusAttribute<String> get numberList =>
       NotusAttribute<String>._(key, scope, 'ol');
 
+  /// Formats a block of lines as a check list.
+  NotusAttribute<String> get checkList =>
+      NotusAttribute<String>._(key, scope, 'cl');
+
   /// Formats a block of lines as a code snippet, using monospace font.
   NotusAttribute<String> get code =>
       NotusAttribute<String>._(key, scope, 'code');
@@ -398,74 +450,25 @@ class BlockAttributeBuilder extends NotusAttributeBuilder<String> {
       NotusAttribute<String>._(key, scope, 'quote');
 }
 
-class EmbedAttributeBuilder
-    extends NotusAttributeBuilder<Map<String, dynamic>> {
-  const EmbedAttributeBuilder._()
-      : super._(EmbedAttribute._kEmbed, NotusAttributeScope.inline);
+class DirectionAttributeBuilder extends NotusAttributeBuilder<String> {
+  static const _kDirection = 'direction';
+  const DirectionAttributeBuilder._()
+      : super._(_kDirection, NotusAttributeScope.line);
 
-  NotusAttribute<Map<String, dynamic>> get horizontalRule =>
-      EmbedAttribute.horizontalRule();
-
-  NotusAttribute<Map<String, dynamic>> image(String source) =>
-      EmbedAttribute.image(source);
-
-  @override
-  NotusAttribute<Map<String, dynamic>> get unset => EmbedAttribute._(null);
-
-  @override
-  NotusAttribute<Map<String, dynamic>> withValue(Map<String, dynamic> value) =>
-      EmbedAttribute._(value);
+  NotusAttribute<String> get rtl => NotusAttribute<String>._(key, scope, 'rtl');
 }
 
-/// Type of embedded content.
-enum EmbedType { horizontalRule, image }
+class AlignmentAttributeBuilder extends NotusAttributeBuilder<String> {
+  static const _kAlignment = 'alignment';
+  const AlignmentAttributeBuilder._()
+      : super._(_kAlignment, NotusAttributeScope.line);
 
-class EmbedAttribute extends NotusAttribute<Map<String, dynamic>> {
-  static const _kValueEquality = MapEquality<String, dynamic>();
-  static const _kEmbed = 'embed';
-  static const _kHorizontalRuleEmbed = 'hr';
-  static const _kImageEmbed = 'image';
+  NotusAttribute<String> get right =>
+      NotusAttribute<String>._(key, scope, 'right');
 
-  EmbedAttribute._(Map<String, dynamic> value)
-      : super._(_kEmbed, NotusAttributeScope.inline, value);
+  NotusAttribute<String> get center =>
+      NotusAttribute<String>._(key, scope, 'center');
 
-  EmbedAttribute.horizontalRule()
-      : this._(<String, dynamic>{'type': _kHorizontalRuleEmbed});
-
-  EmbedAttribute.image(String source)
-      : this._(<String, dynamic>{'type': _kImageEmbed, 'source': source});
-
-  /// Type of this embed.
-  EmbedType get type {
-    if (value['type'] == _kHorizontalRuleEmbed) return EmbedType.horizontalRule;
-    if (value['type'] == _kImageEmbed) return EmbedType.image;
-    assert(false, 'Unknown embed attribute value $value.');
-    return null;
-  }
-
-  @override
-  NotusAttribute<Map<String, dynamic>> get unset => EmbedAttribute._(null);
-
-  @override
-  bool operator ==(other) {
-    if (identical(this, other)) return true;
-    if (other is! EmbedAttribute) return false;
-    EmbedAttribute typedOther = other;
-    return key == typedOther.key &&
-        scope == typedOther.scope &&
-        _kValueEquality.equals(value, typedOther.value);
-  }
-
-  @override
-  int get hashCode {
-    final objects = [key, scope];
-    if (value != null) {
-      final valueHashes =
-          value.entries.map((entry) => hash2(entry.key, entry.value));
-      objects.addAll(valueHashes);
-    } else {
-      objects.add(value);
-    }
-    return hashObjects(objects);
-  }
+  NotusAttribute<String> get justify =>
+      NotusAttribute<String>._(key, scope, 'justify');
 }

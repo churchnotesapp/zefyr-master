@@ -1,10 +1,7 @@
 **Notus** is a rich text document model for [Zefyr][] project.
 
-This package is currently in early preview. If you found a bug or
-have a feature request, please file it at the [issue tracker][].
-
-Zefyr provides a lightweight and user friendly rich text editor for
-Flutter framework.
+If you found a bug or have a feature request, please file it at 
+the [issue tracker][].
 
 For documentation, please see the main [Zefyr][] repository.
 

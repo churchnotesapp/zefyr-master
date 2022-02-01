@@ -3,12 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:zefyr/zefyr.dart';
 
 import '../testing.dart';
 
 void main() {
-  group('$ZefyrEditableText', () {
+  group('ZefyrEditableText', () {
     testWidgets('user input', (tester) async {
       final editor = EditorSandBox(tester: tester);
       await editor.pumpAndTap();
@@ -31,12 +30,12 @@ void main() {
   });
 }
 
-Future<Null> enterText(WidgetTester tester, String text) async {
+Future<void> enterText(WidgetTester tester, String text) async {
   return TestAsyncUtils.guard(() async {
     tester.testTextInput.updateEditingValue(
       TextEditingValue(
         text: text,
-        selection: TextSelection.collapsed(offset: 6),
+        selection: const TextSelection.collapsed(offset: 6),
       ),
     );
     await tester.idle();

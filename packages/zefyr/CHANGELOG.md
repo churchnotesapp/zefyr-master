@@ -1,3 +1,106 @@
+## 1.0.0-rc.4
+
+* Added `maxContentWidth` constraint to ZefyrEditor. When this property is not null the editor's
+  content will only stretch up to the specified value. This does not affect the overall editor
+  width, it will still try to expand horizontally to fill the entire available area. Side effects
+  of setting `maxContentWidth` include:
+  - the scrollbar (for desktop platforms) will appear at the right edge of the full editor width,
+    which may not be the same as the right edge of the content.
+  - gesture and mouse events outside of the content area are still handled by the editor.
+  Both of the above are desired behaviors.
+
+## 1.0.0-rc.3
+
+* Added keyboard shortcuts for bold, italic and underline styles. ([#580](https://github.com/memspace/zefyr/pull/580))
+* Launch URL improvements: allow launching links in editing mode ([#581](https://github.com/memspace/zefyr/pull/581))
+  - For desktop platforms: links launch on `Cmd` + `Click` (macOS) or `Ctrl` + `Click` (windows, linux)
+  - For mobile platforms: long-pressing a link shows a context menu with multiple actions (Open, Copy, Remove) for the user to choose from.
+
+## 1.0.0-rc.2
+
+* Inline code improvements: added backgroundColor, radius and style overrides for headings to
+  inline code theme ([#573](https://github.com/memspace/zefyr/pull/573))
+* Fixed: Inserting horizontal rule moves cursor on the next line after it ([#576](https://github.com/memspace/zefyr/pull/576))
+* Added `Shift` + `Click` support for extending selection on desktop ([#577](https://github.com/memspace/zefyr/pull/577))
+* Added automatic scrolling while selecting text with mouse ([#577](https://github.com/memspace/zefyr/pull/577))
+* Added support for text alignment ([#565](https://github.com/memspace/zefyr/pull/565))
+* Added support for checklists ([#579](https://github.com/memspace/zefyr/pull/579))
+
+## 1.0.0-rc.1
+
+This first public release candidate release brings many improvements, new features and bug fixes. 
+As well as, support for the latest Flutter 2.8 stable version.
+
+Below list only highlights some of the changes included in this release.
+
+* Support Flutter 2.8 
+* Ability to hide individual toolbar items in basic factory ([#448](https://github.com/memspace/zefyr/pull/448))
+* Support null-safety
+* Fixed: FocusNode instance is not created if not provided ([#523](https://github.com/memspace/zefyr/pull/523))
+* Fixed: Fix caret display when cursor on embed line ([#526](https://github.com/memspace/zefyr/pull/526))
+* Bring into view upon selection extension ([#527](https://github.com/memspace/zefyr/pull/527))
+* Fixed: Swapping handles order is prevented ([#532](https://github.com/memspace/zefyr/pull/532))
+* Fixed: Wrong offset for animating ScrollView ([#536](https://github.com/memspace/zefyr/pull/536))
+* Fixed: Visibility of text selection handlers on scroll ([#533](https://github.com/memspace/zefyr/pull/533))
+* Fixed: ZefyrField decoration hint doesn't disappear correctly ([#537](https://github.com/memspace/zefyr/pull/537))
+* Fixed: null-safety issue EditableTextLine ([#544](https://github.com/memspace/zefyr/pull/544))
+* ZefyrToolbar.basic(): allow to prepend / append buttons ([#547](https://github.com/memspace/zefyr/pull/547))
+* Added text direction feature ([#438](https://github.com/memspace/zefyr/pull/438))
+* Fixed: hitTestChildren to allow embedded content receive gesture/mouse events ([#557](https://github.com/memspace/zefyr/pull/557))
+* Floating cursor support for iOS ([#555](https://github.com/memspace/zefyr/pull/555))
+
+## 1.0.0-dev.2.0
+
+* Fixed: Hide selection handle when the current selection is collapsed on Android (#435).
+* Added: Support for text deletion using keyboards Backspace or Delete keys (#431).
+* Fixed: Toolbar overflow by wrapping it in SingleChildScrollView (#423).
+
+## 1.0.0-dev.1.0
+
+This is the first development release of the upcoming 1.0.0 version of zefyr package.
+
+Compared to 0.x versions of this package it's an almost complete rewrite and contains many breaking
+changes, but also comes with many improvements and new features.
+
+**This is an early dev release and it is not recommended to use in production environment. There
+are still many incomplete features as well as known issues that need to be addressed.**
+
+**Breaking changes:**
+
+* `ZefyrScaffold` was removed. It is no longer required to wrap `ZefyrEditor` with it.
+* `ZefyrMode` was removed. Zefyr now follows the contract of standard Flutter TextField and
+  provides separate fields like `showCursor`, `enableInteractiveSelection`, `readOnly` to control
+  editing features.
+* `ZefyrImageDelegate` was removed as well as the `imageDelegate` field. There is now new
+  `embedBuilder` field which allows to customize embedded objects. By default it is set to
+  `defaultZefyrEmbedBuilder` which only supports embeds of type "horizontal rule". To support
+  image embeds this field needs to be supplied with a function which can handle images.
+* `ZefyrView` was removed. It is now possible to use `ZefyrEditor` with `readOnly` set to true to
+  achieve view-only exprience.
+* `ZefyrScope` was removed. There is no replacement for this class, it's just not needed anymore.
+* `ZefyrToolbarDelegate` was removed together with `ZefyrToolbar.delegate` field. The toolbar can
+  now be placed anywhere and does not require a scaffold. Users are required to handle visibility
+  of the toolbar though (which was previously handled by `ZefyrScaffold`).
+* `ZefyrTheme` has been rewritten to simplify theme data. See implementation for more details.
+
+The above is not a comprehensive list but it should highlight all the major changes and help with
+migration.
+
+**What's new:**
+
+* Desktop support, including handling of mouse and keyboard inputs, including some keyboard shortcut
+  as well as, hiding selection handles,
+* Web support, partial. There is still limitations on the Flutter side, particularly around
+  rendering rich-text and providing text metrics for rich-text.
+* Better cursor handling and painting. It now matches the built-in Flutter behavior and style.
+* Better selection handling.
+* Code blocks now have line numbers (also planned - syntax highlighting)
+* `ZefyrEditor.expands` field controls whether the editor expands to fill its parent.
+* `ZefyrEditor.minHeight` and `ZefyrEditor.maxHeight` allow to control the height of the editor.
+* `ZefyrEditor.scrollable` if set to `false` allows to embed the editor into a custom scrollable
+  layout, e.g. a `ListView`.
+* `ZefyrEditr.onLaunchUrl` callback is invoked when the user wants to open a link.
+
 ## 0.12.0
 
 * Updated to support Flutter 1.22
@@ -11,7 +114,7 @@
 This release contains breaking changes.
 The entire theming layer of ZefyrEditor has been rewritten. Most notable changes include:
 
-* Removed `selectionColor` and `cursorColor` from `ZefyrThemeData`. Relying on the Flutter 
+* Removed `selectionColor` and `cursorColor` from `ZefyrThemeData`. Relying on the Flutter
   `ThemeData.textSelectionColor` and `ThemeData.cursorColor` instead.
 * All attribute styles moved to the new `AttributeTheme` class.
 * `indentSize` renamed to `indentWidth`
